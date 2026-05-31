@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux Device Drivers Mastery - Roadmap & Question Bank</title>
+<style>
+:root{--bg:#0a0c10;--bg2:#111418;--bg3:#181d24;--bg4:#1e2530;--border:#252e3d;--border2:#2e3d52;--text:#dde4f0;--muted:#6b7a99;--dim:#3d4d66;--drv:#a78bfa;--blue:#60a5fa;--green:#4ade80;--amber:#fbbf24;--red:#f87171;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono','Fira Code',monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:32px 24px 24px;text-align:center}
+.hero-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--drv);text-transform:uppercase;margin-bottom:8px}
+.hero h1{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text);margin-bottom:6px}
+.hero-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:20px}
+.stat{text-align:center}.stat-val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--drv)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.overall-bar{max-width:480px;margin:0 auto 8px;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.overall-fill{height:100%;background:linear-gradient(90deg,#6d28d9,var(--drv));border-radius:4px;transition:width .5s}
+.overall-label{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.gh-note{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 16px;max-width:620px;margin:16px auto 0;font-size:12px;color:var(--muted)}
+.gh-note b{color:var(--text)}
+.sources-note{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:8px 16px;max-width:620px;margin:10px auto 0;font-size:11px;color:var(--muted);font-family:var(--mono)}
+.phase-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.phase-btn{font-family:var(--mono);font-size:11px;padding:5px 14px;border:1px solid var(--border2);border-radius:4px;background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+.phase-btn:hover{color:var(--text);border-color:var(--muted)}
+.phase-btn.active{color:var(--drv);border-color:var(--drv);background:rgba(167,139,250,.07)}
+.module-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap}
+.mod-btn{font-family:var(--mono);font-size:10px;padding:4px 10px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--dim);cursor:pointer;transition:all .15s}
+.mod-btn:hover{color:var(--muted);border-color:var(--border2)}
+.mod-btn.done{border-color:var(--green);color:var(--green)}
+.mod-btn.partial{border-color:var(--amber);color:var(--amber)}
+.content{max-width:1100px;margin:0 auto;padding:24px}
+.phase-header{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--drv);text-transform:uppercase;padding:16px 0 8px;margin-top:8px}
+.module{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;overflow:hidden}
+.module-head{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;user-select:none;transition:background .15s}
+.module-head:hover{background:var(--bg3)}
+.module-num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--dim);width:32px;flex-shrink:0}
+.module-icon{font-size:20px;flex-shrink:0}
+.module-info{flex:1}.module-title{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text)}
+.module-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.module-right{text-align:right;flex-shrink:0}
+.mod-count{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mod-badge{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;margin-top:3px;display:inline-block}
+.badge-ns{background:rgba(61,77,102,.4);color:var(--dim)}
+.badge-ip{background:rgba(251,191,36,.1);color:var(--amber)}
+.badge-done{background:rgba(74,222,128,.1);color:var(--green)}
+.module-chevron{color:var(--dim);font-size:11px;transition:transform .2s;flex-shrink:0}
+.module.open .module-chevron{transform:rotate(90deg)}
+.mod-bar{height:3px;background:var(--bg4);margin:0 20px}
+.mod-bar-fill{height:100%;background:var(--drv);transition:width .4s}
+.module.open .mod-bar{display:none}
+.module-body{display:none;border-top:1px solid var(--border)}
+.module.open .module-body{display:block}
+.q-table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg3)}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th:first-child{width:42px;text-align:center}th:nth-child(2){width:44px}
+th:nth-child(4){width:80px}th:nth-child(5){width:90px}th:last-child{width:80px}
+tbody tr{border-bottom:1px solid rgba(37,46,61,.6);transition:background .1s;cursor:pointer}
+tbody tr:hover{background:rgba(167,139,250,.03)}
+tbody tr.checked{opacity:.45}tbody tr:last-child{border-bottom:none}
+td{padding:9px 12px;font-size:13px;vertical-align:middle}td:first-child{text-align:center}
+.cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;display:inline-flex;align-items:center;justify-content:center}
+tr.checked .cb{background:var(--drv);border-color:var(--drv)}
+.cb-check{display:none;font-size:10px;font-weight:800;color:var(--bg)}
+tr.checked .cb-check{display:block}
+.q-num{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.q-text{color:var(--text);line-height:1.5}tr.checked .q-text{text-decoration:line-through;color:var(--dim)}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.04em}
+.tag-theory{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.tag-code{background:rgba(167,139,250,.12);color:var(--drv);border:1px solid rgba(167,139,250,.25)}
+.tag-debug{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.tag-design{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.diff{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:700;letter-spacing:.04em}
+.diff-B{background:rgba(74,222,128,.1);color:var(--green)}
+.diff-I{background:rgba(251,191,36,.1);color:var(--amber)}
+.diff-A{background:rgba(248,113,113,.1);color:var(--red)}
+.issue-input{width:52px;font-family:var(--mono);font-size:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;color:var(--muted);padding:2px 5px;outline:none}
+.issue-input:focus{border-color:var(--drv);color:var(--text)}
+.issue-open{display:block;font-family:var(--mono);font-size:9px;color:var(--dim);text-decoration:none;margin-top:2px}
+.issue-open.active{color:var(--blue)}.issue-open.active:hover{text-decoration:underline}
+td.issue-cell{font-size:11px}
+.mod-stats{display:flex;gap:20px;padding:12px 20px;background:var(--bg3);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.ms{color:var(--muted)}.ms span{font-family:var(--mono);color:var(--drv);font-weight:700}
+.mod-prog-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:6px;align-self:center;min-width:80px}
+.mod-prog-fill{height:100%;background:var(--drv);border-radius:3px;transition:width .4s}
+.footer{text-align:center;padding:32px;font-family:var(--mono);font-size:11px;color:var(--dim);border-top:1px solid var(--border);margin-top:32px}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-tag">// complete mastery path</div>
+  <h1>LINUX DEVICE DRIVERS MASTERY</h1>
+  <div class="hero-sub">FROM KERNEL API TO CAMERA, AUDIO &amp; GPU &middot; 30 MODULES &middot; FULL QUESTION BANK</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val" id="s-modules">30</div><div class="stat-label">Modules</div></div>
+    <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-label">Questions</div></div>
+    <div class="stat"><div class="stat-val">3</div><div class="stat-label">Phases</div></div>
+    <div class="stat"><div class="stat-val">&infin;</div><div class="stat-label">Lab exercises</div></div>
+  </div>
+  <div style="color:var(--muted);font-size:12px;margin-bottom:16px">
+    Foundations &mdash; Driver Model &amp; Core APIs &nbsp;&middot;&nbsp; Intermediate &mdash; Subsystems &amp; Buses &nbsp;&middot;&nbsp; Advanced &mdash; Camera, Audio, GPU &amp; Real-World
+  </div>
+  <div class="overall-bar"><div class="overall-fill" id="overall-fill" style="width:0%"></div></div>
+  <div class="overall-label">
+    <b id="done-count">0</b> / <b id="total-count">0</b> questions done &nbsp;
+    <b id="pct-label">0%</b> overall &nbsp;
+    <b id="mod-done">0</b> / <b id="mod-total">30</b> modules complete
+  </div>
+  <div class="sources-note">Sources merged: ldd3 &middot; kernel_driver_api &middot; eldd &middot; v4l2_spec &middot; alsa_internals &middot; real_world_drivers</div>
+  <div class="gh-note"><b>GitHub sync:</b> Export progress JSON &rarr; commit to your repo &rarr; GitHub Actions updates badge automatically.</div>
+</div>
+<nav class="phase-nav">
+  <button class="phase-btn active" onclick="filterPhase(0)">All phases</button>
+  <button class="phase-btn" onclick="filterPhase(1)">Phase 01 &middot; Driver Foundations</button>
+  <button class="phase-btn" onclick="filterPhase(2)">Phase 02 &middot; Subsystems &amp; Buses</button>
+  <button class="phase-btn" onclick="filterPhase(3)">Phase 03 &middot; Advanced &amp; Real-World</button>
+</nav>
+<div class="module-nav" id="mod-nav"></div>
+<div class="content" id="content"></div>
+<div class="footer">DEVICE DRIVERS MASTERY &middot; 30 MODULES &middot; PROBE. INTERRUPT. SHIP. REPEAT.</div>
+<script>
+const MODULES = [
+{
+  id:'m01',phase:1,num:'01',icon:'🏗️',
+  title:'Driver Model & Kernel Object Infrastructure',
+  desc:'kobject, kset, sysfs, device model, bus/driver/device binding, uevent, reference counting.',
+  qs:[
+  ['What is the Linux device model? What problem did it solve compared to the ad-hoc driver registrations of the 2.4 kernel era?','T','B'],
+  ['What is a kobject? What fields does it contain and what role does it play as the base object for all driver model entities?','T','B'],
+  ['What is a kset? How does it group kobjects and how does it appear in sysfs?','T','B'],
+  ['Explain the bus/driver/device triad. What is the role of each and how does bus_type.match() bind a driver to a device?','T','B'],
+  ['What is the difference between device_register() and device_create()? When would you use each?','T','B'],
+  ['What is a uevent? How does the kernel notify user space (udev) when a device is added or removed?','T','B'],
+  ['What is kref? How does it implement reference counting for kernel objects and why is get_device()/put_device() important?','T','B'],
+  ['What is the device hierarchy in sysfs? Describe how a USB device appears under /sys/bus/usb/devices/ and /sys/devices/.','T','B'],
+  ['What is the difference between driver_register() and platform_driver_register()? What bus does a platform driver belong to?','T','B'],
+  ['What is devm_ (devres)? How does devres_alloc() and the devm_ family simplify error path cleanup in probe()?','T','B'],
+  ['Write a kernel module that registers a simple bus type with a custom match() function. Register a device and a driver on it and verify the bind in sysfs.','C','I'],
+  ['Write a kobject-based module that creates a sysfs directory with two attributes: a read-only string and a read-write integer. Verify with cat and echo from user space.','C','B'],
+  ['Write a module that uses devm_kmalloc(), devm_request_irq(), and devm_ioremap(). Trigger an error in probe() and verify all resources are freed automatically.','C','I'],
+  ['Write a driver that sends a custom uevent (KOBJ_CHANGE) with environment variables. Write a udev rule that catches it and runs a script.','C','I'],
+  ['Inspect the device hierarchy of a USB mass storage device in sysfs. Draw the parent chain from /sys/devices/ up to the root. Identify all bus, driver, and class nodes.','C','B'],
+  ['Use udevadm monitor to capture device events for a USB device plug/unplug. Decode each field of the uevent.','C','B'],
+  ['What is the power domain hierarchy in the device model? How does pm_runtime use parent-child relationships to sequence suspend?','T','I'],
+  ['What is device_find_child()? How would you use it to iterate all children of a device from within a driver?','T','I'],
+  ['What is the difference between bus_for_each_dev() and bus_for_each_drv()? Give a use case for each.','T','I'],
+  ['Design a device model for a hypothetical multi-channel ADC SoC where each ADC channel is a separate logical device under a parent ADC controller. Describe the bus, device, and driver structure.','T','A']
+  ]
+},
+{
+  id:'m02',phase:1,num:'02',icon:'📄',
+  title:'Character Devices — Deep Dive',
+  desc:'cdev API, file_operations, poll/select, fasync, mmap, ioctl design, unlocked_ioctl, compat.',
+  qs:[
+  ['Describe the complete lifecycle of a character device: from alloc_chrdev_region() through cdev_add() to device_create() and user-space access.','T','B'],
+  ['What is the file_operations struct? Walk through every function pointer and when it is called.','T','B'],
+  ['What is the difference between read() and readv() (aio_read)? How does the kernel represent vectored I/O with iov_iter?','T','B'],
+  ['How does blocking I/O work in a character driver? Describe the wait_event_interruptible() pattern and what happens when a signal arrives.','T','B'],
+  ['What is poll_wait()? Walk through the full poll()/select() interaction between user space, the VFS, and your driver.','T','B'],
+  ['What is fasync_helper()? How does it enable SIGIO-based asynchronous notification from a character driver?','T','I'],
+  ['What is mmap() support in a character driver? Walk through vm_operations_struct, vm_fault(), and remap_pfn_range().','T','I'],
+  ['What is the difference between unlocked_ioctl and compat_ioctl? When does a 64-bit kernel call compat_ioctl?','T','I'],
+  ['What is copy_to_user() / copy_from_user()? Why can these functions sleep and why must they never be called with a spinlock held?','T','B'],
+  ['What is O_NONBLOCK? How does a driver detect it and return EAGAIN correctly when no data is available?','T','B'],
+  ['Write a character driver implementing a kernel-space ring buffer: write() from user space, read() drains it, blocks when empty, wakes reader when data arrives.','C','I'],
+  ['Extend the ring buffer driver to support poll()/select(). Write a user-space test using select() to wait for data without spinning.','C','I'],
+  ['Add fasync support so the driver sends SIGIO to registered processes when data becomes available. Write a user-space signal handler that reads the data.','C','I'],
+  ['Add mmap() support to expose the ring buffer memory directly to user space. Write a test that reads the data without a read() syscall.','C','I'],
+  ['Add ioctl commands: RING_GET_CAPACITY, RING_GET_USED, RING_RESET. Handle 32-bit user space on a 64-bit kernel with compat_ioctl.','C','I'],
+  ['Write a character driver that implements zero-copy DMA transfers between a hardware buffer and user space using mmap. Benchmark vs copy_to_user.','C','A'],
+  ['What is FMODE_READ, FMODE_WRITE, and FMODE_EXEC? How does the kernel set them and how can a driver inspect them in open()?','T','B'],
+  ['What is the difference between atomic_open() and a standard open()/lookup() pair? When does the VFS use atomic_open()?','T','A'],
+  ['What is the purpose of the llseek() operation in a character driver? What must you return for a device that does not support seeking?','T','B'],
+  ['Design an ioctl interface for a hardware encryption engine. Define the command numbers, argument structures, and error codes. Justify every design decision.','T','A']
+  ]
+},
+{
+  id:'m03',phase:1,num:'03',icon:'⚡',
+  title:'Interrupts & Bottom Halves in Drivers',
+  desc:'request_irq, threaded IRQs, tasklets, workqueues, NAPI, deferred work patterns.',
+  qs:[
+  ['What are the constraints on code running in a hard IRQ handler? List everything you must NOT do and explain why.','T','B'],
+  ['What is the difference between request_irq() with IRQF_SHARED and a dedicated IRQ? What must your handler do for shared IRQs?','T','B'],
+  ['What is a threaded IRQ (request_threaded_irq())? What runs in the hard IRQ context (primary handler) vs the thread?','T','B'],
+  ['What is a tasklet? How does tasklet_schedule() differ from schedule_work()? What are the constraints on tasklet handlers?','T','B'],
+  ['What are the different workqueue types (system_wq, system_highpri_wq, alloc_workqueue)? When would you create a private workqueue?','T','B'],
+  ['What is INIT_WORK() vs INIT_DELAYED_WORK()? How does queue_delayed_work() schedule deferred work with a timer?','T','B'],
+  ['What is the difference between disable_irq() and disable_irq_nosync()? When is nosync needed and what race does the sync version prevent?','T','I'],
+  ['What is IRQ affinity and how does irq_set_affinity_hint() guide the irqbalance daemon to pin an IRQ to a specific CPU?','T','I'],
+  ['What is a GPIO interrupt? How do you request it with gpiod_to_irq() and what trigger type flags (IRQF_TRIGGER_RISING, etc.) apply?','T','B'],
+  ['What is IRQ coalescing in network drivers? How does NAPI use a poll() function to batch receive processing after the first IRQ?','T','I'],
+  ['Write a kernel module that requests an IRQ from a GPIO pin, debounces it in a threaded handler, and counts events via a sysfs attribute.','C','I'],
+  ['Write a driver that uses a workqueue to defer heavy processing triggered by an IRQ. Measure the time from IRQ to work execution.','C','I'],
+  ['Write a driver implementing NAPI: disable the hardware IRQ in the hard handler, schedule napi_schedule(), process up to budget packets in napi_poll(), re-enable IRQ when done.','C','A'],
+  ['Write a module that uses INIT_DELAYED_WORK to retry a failed hardware initialization every 500ms up to 5 times before giving up.','C','I'],
+  ['Trigger an IRQ storm on a GPIO line and show how IRQ coalescing (irq_set_affinity, threaded IRQs) reduces CPU load. Measure with perf stat.','C','I'],
+  ['Cause a BUG by calling kmalloc(GFP_KERNEL) inside a hard IRQ handler with KASAN enabled. Show the report and explain why it fails.','C','B'],
+  ['What is interrupt latency? Name five kernel activities that can delay IRQ delivery and how PREEMPT_RT addresses each.','T','I'],
+  ['What is a soft IRQ? Name all 10 soft IRQ types (TIMER, NET_TX, NET_RX, BLOCK, etc.) and what triggers each.','T','I'],
+  ['What is irq_work_queue()? How does it run work in IRQ context on the current CPU without going through workqueue scheduling?','T','I'],
+  ['Design the interrupt architecture for a 10-channel ADC driver: one IRQ per channel with DMA completion. How do you minimize latency jitter across channels?','T','A']
+  ]
+},
+{
+  id:'m04',phase:1,num:'04',icon:'💾',
+  title:'Memory in Drivers — DMA, Coherency & Mapping',
+  desc:'DMA API, coherent vs streaming, dma_map_sg, IOMMU, cache coherency, ioremap, kmap.',
+  qs:[
+  ['What is the DMA API? Why must drivers use it instead of virt_to_phys() for DMA addresses?','T','B'],
+  ['What is the difference between dma_alloc_coherent() and dma_map_single()? When would you use each?','T','B'],
+  ['What is cache coherency in DMA? When does the CPU cache hold stale data after a device DMA write?','T','B'],
+  ['What are dma_sync_single_for_device() and dma_sync_single_for_cpu()? When exactly must you call each?','T','I'],
+  ['What is a scatter-gather list? How do dma_map_sg() and sg_dma_address() handle non-contiguous buffers?','T','I'],
+  ['What is the IOMMU? How does it translate device-visible addresses and protect against DMA attacks?','T','I'],
+  ['What is ioremap()? When does a driver need ioremap_nocache() vs ioremap_wc() (write-combining)?','T','B'],
+  ['What is kmap() and kmap_atomic()? Why is high memory (ZONE_HIGHMEM) relevant on 32-bit ARM?','T','I'],
+  ['What is a DMA mask? What does dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32)) do for a device?','T','B'],
+  ['What is P2PDMA (peer-to-peer DMA)? How can a GPU read directly from an NVMe without going through host RAM?','T','A'],
+  ['Write a kernel module that uses dma_alloc_coherent() to allocate a shared buffer, writes a pattern from the CPU side, and verifies it from the device side (simulated via another CPU read).','C','I'],
+  ['Write a driver that uses dma_map_sg() to DMA a user-space buffer passed via get_user_pages(). Correctly pin, map, transfer, unmap, and release the pages.','C','A'],
+  ['Write a platform driver that maps a device register space with ioremap_nocache(), reads a version register using readl(), and exposes it via sysfs.','C','B'],
+  ['Write a kernel module that demonstrates cache incoherency: allocate a normal kmalloc buffer, trigger a DMA write without sync, and show the CPU reads stale data. Fix with dma_sync.','C','A'],
+  ['Use dma-buf to export a kernel-allocated DMA buffer and import it in a second module. Write and read data through the shared buffer.','C','A'],
+  ['Enable CONFIG_DMA_API_DEBUG and write a driver that intentionally misses a dma_unmap call. Show the debug report.','C','I'],
+  ['What is a DMA pool (dma_pool_create)? When is it more efficient than calling dma_alloc_coherent() for many small DMA allocations?','T','I'],
+  ['What is bounce buffering? When does the kernel use it and what performance cost does it impose?','T','I'],
+  ['What is the difference between GFP_DMA, GFP_DMA32, and GFP_KERNEL for driver memory allocations?','T','B'],
+  ['Design the DMA memory management strategy for a camera ISP driver that captures 4K frames at 60fps into a ring of 8 DMA buffers shared with a GPU encoder.','T','A']
+  ]
+},
+{
+  id:'m05',phase:1,num:'05',icon:'🔧',
+  title:'Platform Devices & Device Tree Binding',
+  desc:'platform_driver, of_device_id, device tree binding authoring, DT overlays, clock/regulator/reset consumers.',
+  qs:[
+  ['What is a platform device? What does platform_device_register() do and how does it differ from registering a PCIe device?','T','B'],
+  ['What is the of_device_id table? How does the kernel match a DT node to a platform driver using the compatible string?','T','B'],
+  ['What is the probe() function contract? What must it do on success and what must it undo on failure?','T','B'],
+  ['What is probe deferral (return -EPROBE_DEFER)? When does a driver return it and how does the kernel re-probe later?','T','B'],
+  ['What is the device tree binding document? What information must a binding YAML describe?','T','B'],
+  ['How do you request a clock in a driver using the CCF (Common Clock Framework)? Walk through clk_get(), clk_prepare_enable(), and clk_disable_unprepare().','T','B'],
+  ['How do you request a regulator supply in a driver? Walk through regulator_get(), regulator_enable(), regulator_set_voltage().','T','I'],
+  ['What is the reset framework? How does a driver assert and deassert a hardware reset with reset_control_assert()?','T','I'],
+  ['What is of_property_read_u32()? How do you read a DT property of each type: u32, string, phandle, GPIO, interrupt?','T','B'],
+  ['What is a device tree overlay? How does it add or modify a node at runtime without replacing the full DTB?','T','I'],
+  ['Write a platform driver for a hypothetical LED controller: parse a DT node with a reg property (MMIO base), a clocks reference, and a gpio-reset property. Implement probe/remove.','C','I'],
+  ['Write a device tree binding YAML for your LED controller. Include all required properties with types and constraints. Validate with dt-schema.','C','I'],
+  ['Write a device tree overlay for the Raspberry Pi that enables a SPI device and binds it to a driver. Load with dtoverlay and verify in /proc/device-tree.','C','I'],
+  ['Write a platform driver that uses devm_clk_get_enabled() and devm_regulator_get_enable(). Show the probe fails cleanly when the regulator is not available.','C','I'],
+  ['Parse a DT node with an array of GPIOs (gpios = <&gpio0 5 0>, <&gpio0 6 0>). Request each GPIO using the descriptor API and toggle them from sysfs.','C','I'],
+  ['Write a driver that reads a DT pinctrl-0 property and calls pinctrl_select_state() to configure pins for active vs sleep modes.','C','I'],
+  ['What is the difference between of_iomap() and devm_of_iomap()? What does of_iomap() do that ioremap() alone does not?','T','B'],
+  ['What is ACPI-based device enumeration? How does an ACPI-matched driver compare to a DT-matched driver at the binding level?','T','I'],
+  ['What is the compatible string hierarchy (e.g., "vendor,chip-v2", "vendor,chip")? How does the driver distinguish between chip revisions?','T','I'],
+  ['Design the full DT binding and driver architecture for a sensor hub SoC that integrates accelerometer, gyroscope, and magnetometer on the same I2C bus with a shared interrupt line.','T','A']
+  ]
+},
+{
+  id:'m06',phase:1,num:'06',icon:'🌡️',
+  title:'I2C Driver Development',
+  desc:'i2c_client, i2c_driver, smbus, regmap-i2c, multi-instance, real sensor drivers.',
+  qs:[
+  ['What is the I2C subsystem in Linux? Describe the roles of i2c_adapter, i2c_client, and i2c_driver.','T','B'],
+  ['What is the difference between i2c_transfer() (raw message) and the SMBus helper functions (i2c_smbus_read_byte_data())?','T','B'],
+  ['What is i2c_master_send() and i2c_master_recv()? When would you use them vs i2c_transfer() with multiple messages?','T','B'],
+  ['What is i2c_detect()? How does the legacy probe mechanism scan addresses, and why is it discouraged for new drivers?','T','I'],
+  ['What is regmap? How does regmap-i2c abstract the register access for an I2C sensor so the core driver is bus-agnostic?','T','I'],
+  ['What is the IIO (Industrial I/O) subsystem? How does a sensor driver use iio_device_alloc() and iio_triggered_buffer_setup()?','T','I'],
+  ['How does interrupt-driven I2C data ready work? Describe the sequence: GPIO IRQ fires, handler schedules work, work calls i2c_transfer to read the sample.','T','I'],
+  ['What is the I2C block read limit? What is the maximum number of bytes per transfer and how do you handle sensors that return more?','T','B'],
+  ['What is clock stretching in I2C? What kernel/hardware support is required and what timeout handling must a driver implement?','T','I'],
+  ['What is an I2C mux (i2c-mux)? How does the kernel support switching between multiple downstream I2C buses through a mux chip?','T','I'],
+  ['Write a complete I2C driver for the LM75 temperature sensor: probe reads device ID register, implements read_raw() for temperature via IIO, supports the data-ready interrupt.','C','I'],
+  ['Write an I2C driver for the MPU-6050 IMU using regmap-i2c. Implement accelerometer and gyroscope channel reads. Export via IIO with triggered buffer support.','C','I'],
+  ['Write an I2C EEPROM driver (AT24C02) with read/write support exposed as a character device. Handle page-write boundaries correctly.','C','I'],
+  ['Write a driver for an I2C GPIO expander (PCF8574). Implement the gpio_chip interface so user space can control its pins via /sys/class/gpio.','C','I'],
+  ['Use i2cdetect, i2cdump, and i2ctransfer to manually communicate with a sensor on an I2C bus. Decode the register map from the datasheet and compare with what the driver does.','C','B'],
+  ['Add IIO buffer and trigger support to your LM75 driver. Capture a stream of samples at 10Hz triggered by hrtimer and read them from /dev/iio:device0.','C','A'],
+  ['What is i2c_new_dummy_device()? When does a driver need to claim a secondary I2C address to prevent other drivers from probing it?','T','I'],
+  ['What is the I2C slave mode framework in Linux? How does a microcontroller acting as I2C slave register its backend driver?','T','A'],
+  ['What is ACPI-based I2C device enumeration? How does an ACPI I2C device table entry compare to a DT i2c-client node?','T','I'],
+  ['Design a production-grade I2C driver for a battery fuel gauge IC (e.g., BQ27742) that must report state of charge, voltage, current, temperature, and health to user space via the power supply subsystem.','T','A']
+  ]
+},
+{
+  id:'m07',phase:1,num:'07',icon:'🔌',
+  title:'SPI Driver Development',
+  desc:'spi_master, spi_device, spi_transfer, full-duplex, DMA SPI, spidev, real sensor drivers.',
+  qs:[
+  ['What is the SPI subsystem in Linux? Describe spi_controller (master), spi_device, and spi_driver.','T','B'],
+  ['What is an spi_transfer and spi_message? How do you set up a full-duplex transfer with separate TX and RX buffers?','T','B'],
+  ['What is the difference between spi_sync() and spi_async()? When would you use async and what callback mechanism does it use?','T','B'],
+  ['What are the SPI mode bits (CPOL, CPHA, SPI_LSB_FIRST, SPI_CS_HIGH)? How does the driver declare the required mode in spi_device.mode?','T','B'],
+  ['What is SPI DMA support? How does a driver enable DMA transfers via spi_transfer.tx_dma / rx_dma and what alignment requirements apply?','T','I'],
+  ['What is spidev? How does it allow user-space programs to bit-bang SPI protocols without a dedicated kernel driver?','T','B'],
+  ['What is the CS (chip select) model in Linux SPI? How does the framework handle multiple chip selects on one controller?','T','B'],
+  ['What is the SPI offload (SPI engine) model for FPGA-based SPI controllers? How does the driver describe transfer sequences?','T','A'],
+  ['How do you implement a half-duplex SPI transfer (e.g., write command then read response as two sequential transfers without toggling CS between them)?','T','I'],
+  ['What is the difference between SPI and QSPI (Quad SPI)? When does a flash driver use SPI_TX_QUAD and SPI_RX_QUAD flags?','T','I'],
+  ['Write a complete SPI driver for the ADXL345 accelerometer: configure mode and speed in probe(), read X/Y/Z registers via spi_sync(), export via IIO with triggered buffer.','C','I'],
+  ['Write a SPI NOR flash driver that implements erase, program, and read operations. Handle the write-enable (WREN) command sequence and busy polling.','C','I'],
+  ['Write a driver for a SPI DAC (MCP4921): implement a write_raw() IIO callback that sends a 16-bit frame with the voltage value.','C','I'],
+  ['Use spidev from user space to bit-bang a SPI protocol: open /dev/spidev0.0, set mode and speed with ioctl, perform a full-duplex transfer and print the response.','C','B'],
+  ['Write a SPI driver that uses DMA for transfers over 32 bytes and falls back to PIO for smaller transfers. Show the threshold in probe() and benchmark both paths.','C','A'],
+  ['Write a SPI controller driver for a simple GPIO-bitbang controller using the spi-gpio.c framework. Verify it works with your ADXL345 driver.','C','A'],
+  ['What is the SPI transfer delay_usecs field? When must you add inter-transfer delays and how does the controller driver honor them?','T','I'],
+  ['What is the cs_change field in spi_transfer? When would you set it to 1 in the middle of a message to deassert CS between transfers?','T','I'],
+  ['What is the regmap-spi backend? How does it allow a driver that uses regmap to transparently switch from I2C to SPI without changing the register access code?','T','I'],
+  ['Design a SPI driver for a 3-wire (Microwire) interface radar sensor that uses a proprietary framing protocol. Describe the transfer setup, CS timing, and DMA pipeline.','T','A']
+  ]
+},
+{
+  id:'m08',phase:1,num:'08',icon:'📌',
+  title:'GPIO, Pinctrl & PWM Subsystems',
+  desc:'gpio_chip, gpiod API, pinctrl, pin muxing, PWM framework, real-world LED and motor control.',
+  qs:[
+  ['What is the GPIO subsystem? Describe the legacy integer API vs the modern descriptor API (gpiod_get).','T','B'],
+  ['What is gpio_chip? What function pointers must a GPIO controller driver implement?','T','B'],
+  ['How do you request a GPIO from a device tree node using the descriptor API? Walk through gpiod_get(), gpiod_direction_output(), gpiod_set_value().','T','B'],
+  ['What is pinctrl? What problem does it solve that the GPIO subsystem alone cannot?','T','B'],
+  ['What is a pinmux group? How does a pinctrl driver describe that pins 5,6,7 can be either UART or SPI, but not both simultaneously?','T','I'],
+  ['What is a PWM channel? How does the PWM framework abstract hardware PWM timers and software PWM via a unified API?','T','B'],
+  ['How do you request a PWM from a DT node using pwm_get()? Walk through pwm_config(), pwm_enable(), and pwm_disable().','T','B'],
+  ['What is the LED subsystem (leds-class)? How does a driver register a struct led_classdev and implement brightness_set()?','T','B'],
+  ['What is the LED trigger framework? How does the heartbeat trigger blink an LED based on system load without application involvement?','T','B'],
+  ['What is the input subsystem? How does a GPIO button driver use input_report_key() and input_sync() to deliver key events?','T','B'],
+  ['Write a GPIO controller driver (gpio_chip) for a hypothetical 8-bit I2C port expander. Implement get(), set(), direction_input(), direction_output(), and to_irq().','C','I'],
+  ['Write a PWM-based LED brightness driver: expose brightness via sysfs, convert 0-255 brightness to duty cycle, and call pwm_apply_state().','C','B'],
+  ['Write a platform driver that reads a DT property gpio-leds with multiple GPIO entries. Register each as an LED class device with a unique name.','C','I'],
+  ['Write a GPIO interrupt-based button driver using the input subsystem. Debounce in a threaded IRQ. Report KEY_ENTER on press and release.','C','B'],
+  ['Write a pinctrl driver for a simple SoC that supports 4 pin groups: UART0, SPI0, I2C0, GPIO. Implement the pinmux operations for exclusive group selection.','C','A'],
+  ['Write a motor controller driver using two PWM channels (forward and reverse). Expose speed and direction via sysfs. Ensure both PWMs cannot be active simultaneously.','C','I'],
+  ['What is the fan control interface in the thermal framework? How does a PWM fan driver register as a cooling device?','T','I'],
+  ['What is GPIO hog? How do you configure a GPIO to be driven to a fixed state at boot without a driver using a DT gpio-hog property?','T','I'],
+  ['What is the difference between open-drain and push-pull GPIO output? How do you configure open-drain in the DT and in the gpio_chip driver?','T','I'],
+  ['Design a GPIO expander driver for an industrial I/O board with 32 output GPIOs driven by two daisy-chained SPI shift registers. Include interrupt support for 16 input GPIOs.','T','A']
+  ]
+},
+{
+  id:'m09',phase:2,num:'09',icon:'🌐',
+  title:'Network Device Drivers',
+  desc:'net_device, ndo operations, sk_buff, NAPI, ethtool, phylib, real NIC driver walkthrough.',
+  qs:[
+  ['What is net_device? Describe its most important fields: name, dev_addr, flags, mtu, netdev_ops, ethtool_ops.','T','B'],
+  ['What is net_device_ops? Name and describe the 8 most important function pointers (ndo_open, ndo_stop, ndo_start_xmit, ndo_get_stats64, etc.).','T','B'],
+  ['What is an sk_buff? Describe skb_put(), skb_push(), skb_pull(), and skb_reserve() and when each is used in TX and RX paths.','T','B'],
+  ['What is NAPI? Walk through the complete NAPI receive path: hard IRQ, napi_schedule(), napi_poll(), napi_complete_done().','T','I'],
+  ['What is netif_tx_wake_queue() and netif_tx_stop_queue()? When does a driver stop and restart the TX queue?','T','I'],
+  ['What is phylib? How does an Ethernet MAC driver connect to a PHY using phy_connect() and handle link state changes?','T','I'],
+  ['What is ethtool? How does a driver implement ethtool_ops to expose speed, duplex, stats, ring sizes, and coalesce settings?','T','I'],
+  ['What is XDP in the context of a NIC driver? How does the driver implement ndo_bpf() and ndo_xdp_xmit() for zero-copy packet processing?','T','A'],
+  ['What is RX offload (GRO, LRO, checksum offload)? How does a driver signal hardware offload capability via features flags?','T','I'],
+  ['What is a TX descriptor ring? How does a typical NIC driver manage a ring of DMA descriptors for transmit, including head/tail pointers and completion interrupts?','T','I'],
+  ['Write a minimal loopback network driver using alloc_etherdev(), register_netdev(), and ndo_start_xmit() that loops transmitted packets back to the receive path.','C','I'],
+  ['Extend your loopback driver to implement NAPI receive: disable IRQ in the hard handler, schedule napi, process up to budget packets in napi_poll.','C','I'],
+  ['Write a virtual NIC driver (like veth) that creates pairs of interfaces and forwards packets between them. Test with two network namespaces.','C','A'],
+  ['Write an ethtool_ops implementation for your loopback driver: report interface statistics, ring sizes, and implement self-test that sends and receives a packet.','C','I'],
+  ['Write a driver that implements XDP_PASS, XDP_DROP, and XDP_TX actions. Benchmark packet drop rate vs iptables DROP rule.','C','A'],
+  ['Use ethtool -S, ethtool -k, and ethtool -c to inspect NIC statistics, offload capabilities, and coalescing settings on a real NIC. Tune coalescing for minimum latency.','C','B'],
+  ['What is the softnet_data per-CPU structure? How does the kernel manage per-CPU receive queues and backlog?','T','A'],
+  ['What is netpoll? How does it allow the kernel to send UDP packets (for kgdb, netconsole) even when the normal networking stack is not running?','T','A'],
+  ['What is a virtual function (VF) in SR-IOV? How does a NIC driver expose VFs and how does the hypervisor assign them to VMs?','T','A'],
+  ['Design a 100Gbps NIC driver architecture: number of TX/RX queue pairs, IRQ vector allocation, NUMA-aware buffer allocation, and XDP integration.','T','A']
+  ]
+},
+{
+  id:'m10',phase:2,num:'10',icon:'📦',
+  title:'Block Device & Storage Drivers',
+  desc:'blk-mq, bio, request queue, NVMe driver internals, UFS, eMMC, MTD/NAND, I/O schedulers.',
+  qs:[
+  ['What is blk-mq? How does it differ from the single-queue block layer it replaced and why is it faster on multi-core systems?','T','B'],
+  ['What is a bio? Describe bi_iter, bi_io_vec, bi_sector, and bi_size. How does bio_for_each_segment() iterate over it?','T','B'],
+  ['What is the blk_mq_tag_set? How does it define the number of hardware queues, queue depth, and command size for a driver?','T','B'],
+  ['What is blk_mq_ops? Describe queue_rq(), commit_rqs(), and complete(). What must queue_rq() return (BLK_STS_OK, BLK_STS_RESOURCE)?','T','I'],
+  ['What is an I/O scheduler? How do mq-deadline and BFQ plug into blk-mq via elevator_type?','T','I'],
+  ['What is an NVMe submission queue and completion queue? How does the NVMe driver map them to blk-mq hardware queues?','T','I'],
+  ['What is MTD (Memory Technology Device)? How does it abstract NOR and NAND flash for filesystem use?','T','I'],
+  ['What is UBI (Unsorted Block Images)? How does it sit between MTD and UBIFS to provide wear leveling?','T','I'],
+  ['What is eMMC boot partition? How does the kernel driver expose boot0, boot1, and the user data area as separate block devices?','T','I'],
+  ['What is discard/TRIM in block drivers? How does blk_queue_flag_set(QUEUE_FLAG_DISCARD) and the blkdev_issue_discard() path work?','T','I'],
+  ['Write a minimal RAM-backed blk-mq driver: allocate a kmalloc buffer, implement queue_rq() to memcpy for reads and writes, complete the request with blk_mq_end_request().','C','A'],
+  ['Write a block driver that supports discard: set the discard queue flags, handle REQ_OP_DISCARD in queue_rq() by zeroing the corresponding region.','C','A'],
+  ['Write a driver that wraps an NVMe passthrough ioctl (NVME_IOCTL_PASSTHRU) to send a vendor-specific NVMe command and read the result.','C','I'],
+  ['Use blktrace and blkparse to capture I/O traces during an fio benchmark. Identify merge opportunities and queue-depth saturation.','C','I'],
+  ['Write a kernel module that intercepts bio submissions for a specific disk using bio_list and logs the sector, size, and direction of every request.','C','A'],
+  ['Use fio with libaio and io_uring engines to benchmark a block device. Compare IOPS, latency, and CPU utilization. Identify the io_uring advantage.','C','I'],
+  ['What is the difference between a raw block device and a partition? How does the kernel represent partitions as separate block devices internally?','T','B'],
+  ['What is write-back vs write-through caching in a storage driver? How does the kernel guarantee data reaches stable storage with REQ_PREFLUSH and REQ_FUA?','T','I'],
+  ['What is a zone block device (ZBD)? How do SMR (Shingled Magnetic Recording) drives expose zones and what kernel support exists for them?','T','A'],
+  ['Design a storage driver for an industrial FPGA-based RAID controller: describe the blk-mq queue setup, DMA scatter-gather, completion interrupt handling, and error recovery.','T','A']
+  ]
+},
+{
+  id:'m11',phase:2,num:'11',icon:'🔗',
+  title:'USB Driver Development',
+  desc:'usb_driver, URBs, transfer types, USB classes, gadget/device mode, USB audio, HID, real drivers.',
+  qs:[
+  ['What is the USB device model in Linux? Describe usb_device, usb_interface, usb_driver, and usb_host_endpoint.','T','B'],
+  ['What is a URB (USB Request Block)? Describe usb_fill_bulk_urb(), usb_fill_int_urb(), usb_fill_control_urb(), and their completion callbacks.','T','B'],
+  ['What are the four USB transfer types (control, bulk, interrupt, isochronous)? Which endpoint type does each use and what does the kernel guarantee about each?','T','B'],
+  ['What is the USB descriptor hierarchy? Walk through device descriptor, configuration descriptor, interface descriptor, and endpoint descriptor.','T','B'],
+  ['What is probe() for a USB driver? What does usb_register_driver() do and how does the USB core match a driver to an interface?','T','B'],
+  ['What is the USB HID subsystem? How does the hid-core parse HID report descriptors and deliver events to the input subsystem?','T','I'],
+  ['What is isochronous transfer? How does a USB audio driver use ISO URBs to stream audio samples with guaranteed bandwidth?','T','I'],
+  ['What is the USB gadget framework? How does it allow a Linux device to act as USB peripheral (mass storage, RNDIS, CDC-ACM)?','T','I'],
+  ['What is configfs gadget? How does it allow user space to compose a USB gadget from multiple function modules at runtime?','T','I'],
+  ['What is USB power management? How does autosuspend work and what must a driver implement to support it?','T','I'],
+  ['Write a USB character device driver for a USB-serial adapter (CP2102 class). Implement bulk IN/OUT URBs for data transfer and a control URB for baud rate configuration.','C','I'],
+  ['Write a USB HID driver that reads button state from a custom HID device. Parse the HID report descriptor manually and map buttons to input key events.','C','I'],
+  ['Write a USB isochronous driver that reads audio samples from a USB microphone. Set up a ring of ISO URBs, handle completion callbacks, and write samples to an ALSA PCM buffer.','C','A'],
+  ['Write a USB gadget using configfs: configure a CDC-ACM (serial) function, bind it to a UDC, and verify it appears as /dev/ttyACM0 on the host.','C','I'],
+  ['Use usbmon to capture the USB traffic between a USB keyboard and the host. Decode a key press: identify the interrupt IN URB and the HID report payload.','C','I'],
+  ['Write a user-space libusb program that enumerates all USB devices, reads each device descriptor, and for each HID interface reads and decodes 10 reports.','C','B'],
+  ['What is USB 3.x bulk stream? How do streams allow multiple independent bulk transfer streams on one endpoint without serialization?','T','A'],
+  ['What is USB Video Class (UVC)? How does the uvcvideo driver expose a UVC camera as a V4L2 device?','T','I'],
+  ['What is the difference between UASP (USB Attached SCSI Protocol) and the legacy Bulk-Only Transport for USB mass storage?','T','I'],
+  ['Design a USB multi-function gadget for an embedded device that presents simultaneously: a mass storage interface (for firmware updates), a CDC-ACM interface (for debug shell), and a custom vendor interface (for telemetry).','T','A']
+  ]
+},
+{
+  id:'m12',phase:2,num:'12',icon:'💻',
+  title:'PCIe Driver Development',
+  desc:'pci_driver, BAR mapping, MSI-X, DMA, config space, PCIe error handling (AER), hotplug.',
+  qs:[
+  ['What is pci_driver? Describe the id_table, probe(), remove(), and the PCI device ID structure (vendor, device, subsystem_vendor).','T','B'],
+  ['What is a PCIe BAR (Base Address Register)? How does pci_resource_start(), pci_resource_len(), and pci_iomap() give a driver access to device registers?','T','B'],
+  ['What is the PCIe config space? How do pci_read_config_dword() and pci_write_config_dword() access capability structures?','T','B'],
+  ['What is MSI (Message Signaled Interrupt)? How does pci_alloc_irq_vectors() replace the old pci_enable_msi() and how do you request multiple MSI-X vectors?','T','I'],
+  ['What is pci_enable_device()? What does it do (enable bus mastering, IO, Memory space) and what must a driver call before accessing BARs?','T','B'],
+  ['What is the PCIe AER (Advanced Error Reporting) subsystem? How does a driver register error handlers with pci_err_handler?','T','I'],
+  ['What is PCIe hotplug? How does the kernel detect a device removal and call the driver remove() in a safe order?','T','I'],
+  ['What is pci_save_state() and pci_restore_state()? When must a driver call them (system suspend, error recovery)?','T','I'],
+  ['What is a PCIe SR-IOV Physical Function (PF) and Virtual Function (VF) driver? What does the PF driver do to enable VFs?','T','A'],
+  ['What is the difference between 32-bit and 64-bit BARs? How does a driver handle a 64-bit BAR that spans two config space slots?','T','I'],
+  ['Write a PCIe driver skeleton: pci_register_driver, probe (enable device, map BAR0, request MSI-X, request IRQ), remove (free IRQ, unmap BAR, disable device). Test in QEMU with a simulated device.','C','I'],
+  ['Write a PCIe driver that performs a DMA loopback test: allocate a coherent buffer, write a pattern to device memory via BAR, trigger a DMA back to host memory, verify.','C','A'],
+  ['Write a PCIe driver that reads the device serial number from the PCIe DSN (Device Serial Number) capability structure and exposes it via sysfs.','C','I'],
+  ['Implement error recovery in a PCIe driver: when pci_err_handler.error_detected() is called, quiesce the device, return PCI_ERS_RESULT_NEED_RESET, then reinitialize in reset_done().','C','A'],
+  ['Use lspci -vvv to fully decode the capabilities of a PCIe NIC: Link Capabilities, MSI-X table size, AER capability, ASPM states.','C','B'],
+  ['Write a PCIe driver that implements SR-IOV: call pci_enable_sriov(pdev, num_vfs) and implement the sriov_configure callback to allow run-time VF count changes.','C','A'],
+  ['What is PCIe TLP (Transaction Layer Packet)? What are the types (MRd, MWr, CplD) and when does a driver cause each?','T','A'],
+  ['What is PASID (Process Address Space ID)? How does it enable per-process IOMMU isolation for PCIe devices shared among multiple VMs?','T','A'],
+  ['What is the PCIe P2PDMA API? How does dma_map_resource() allow one PCIe device to DMA directly to another without host memory involvement?','T','A'],
+  ['Design a PCIe FPGA driver for a network accelerator card: describe BAR layout, MSI-X vector assignment, DMA ring management, and firmware update mechanism.','T','A']
+  ]
+},
+{
+  id:'m13',phase:2,num:'13',icon:'📺',
+  title:'Display & GPU Drivers (DRM/KMS)',
+  desc:'DRM subsystem, KMS, CRTC, plane, connector, encoder, GEM/TTM, Atomic modesetting, GPU command submission.',
+  qs:[
+  ['What is the DRM (Direct Rendering Manager) subsystem? What two main functions does it provide: KMS and GPU rendering?','T','B'],
+  ['What is KMS (Kernel Mode Setting)? What are the hardware abstractions: CRTC, plane, connector, encoder, and bridge?','T','B'],
+  ['What is atomic modesetting? How does drm_atomic_commit() replace the legacy setcrtc() and setplane() with an atomic transaction?','T','I'],
+  ['What is a DRM plane? What are the three plane types (primary, cursor, overlay) and what does each represent?','T','B'],
+  ['What is GEM (Graphics Execution Manager)? How does a driver implement GEM buffer objects and the dma-buf export interface?','T','I'],
+  ['What is TTM (Translation Table Manager)? How does it manage GPU VRAM and system RAM as memory domains with eviction?','T','A'],
+  ['What is a DRM connector? How does the driver report EDID, supported modes, and connection status via drm_connector_helper_funcs?','T','I'],
+  ['What is the difference between a DRM encoder and a DRM bridge? When would you chain multiple bridges?','T','I'],
+  ['What is GPU command submission? How does a driver implement the EXEC ioctl to validate, pin, and submit a command buffer to the GPU ring?','T','A'],
+  ['What is the DRM scheduler (drm_gpu_scheduler)? How does it manage job queuing across multiple GPU engines?','T','A'],
+  ['Write a minimal DRM KMS driver for a simple framebuffer device: register a CRTC, primary plane, and connector. Implement atomic_check() and atomic_update() to write the framebuffer address to a hardware register.','C','A'],
+  ['Write a DRM driver that exports GEM buffers via dma-buf. Import them in a V4L2 camera driver to achieve zero-copy camera-to-display pipelines.','C','A'],
+  ['Write a DRM bridge driver for an HDMI transmitter chip connected via I2C (e.g., Synopsys DesignWare HDMI). Implement bridge_attach(), bridge_enable(), and bridge_disable().','C','A'],
+  ['Use modetest from libdrm to enumerate connectors, encoders, and CRTCs on your system. Set a video mode programmatically and display a color bar pattern.','C','I'],
+  ['Use drm_info or IGT gpu-tools to inspect the DRM device state. Dump the current atomic state and identify active planes and their properties.','C','I'],
+  ['Write a simple GPU compute driver (using the DRM exec / scheduler model) that submits a command to a simulated ring buffer and signals completion via a fence.','C','A'],
+  ['What is the DRM lease mechanism? How does it allow a compositor to hand off exclusive access to a CRTC to a VR runtime?','T','A'],
+  ['What is DMA-fence? How does the kernel synchronize between GPU render jobs and display scanout without CPU involvement?','T','A'],
+  ['What is the panel subsystem (drm_panel)? How does a DSI display driver register a panel and connect it to a DRM encoder?','T','I'],
+  ['Design a DRM driver for a mobile SoC display controller: describe CRTC, 3 overlay planes, DSI encoder, panel bridge, atomic modesetting, and VBLANK interrupt handling.','T','A']
+  ]
+},
+{
+  id:'m14',phase:2,num:'14',icon:'🔊',
+  title:'Audio Drivers — ALSA & ASoC',
+  desc:'ALSA PCM, sound cards, ASoC machine/codec/platform, DPCM, HDMI audio, USB audio, real codec drivers.',
+  qs:[
+  ['What is ALSA? What are its main abstractions: sound card, PCM device, control interface, and mixer?','T','B'],
+  ['What is an ASoC machine driver? What are the three components it links: platform (DMA), codec, and machine?','T','B'],
+  ['What is an ASoC CODEC driver? What does it implement: register map, DAI (Digital Audio Interface), controls, and DAPM widgets?','T','B'],
+  ['What is DAPM (Dynamic Audio Power Management)? How does the widget graph determine which codec blocks to power on/off?','T','I'],
+  ['What is a DAI (Digital Audio Interface)? Describe I2S, PCM, TDM, and PDM and which real-world use cases apply to each.','T','B'],
+  ['What is a PCM substream? Describe the snd_pcm_ops: open, close, hw_params, prepare, trigger (start/stop), pointer.','T','I'],
+  ['What is snd_pcm_hardware? What constraints does it describe (formats, rates, channels, buffer size, period size)?','T','B'],
+  ['What is DPCM (Dynamic PCM)? How does it allow a single FE (front-end) PCM to route to multiple BE (back-end) DAIs?','T','A'],
+  ['What is USB audio class (UAC1 and UAC2)? How does the snd-usb-audio driver map USB isochronous endpoints to ALSA PCM streams?','T','I'],
+  ['What is HDMI audio? How does the DRM driver hand HDMI audio off to an ASoC HDA (High Definition Audio) or HDMI codec driver?','T','I'],
+  ['Write an ASoC codec driver for the WM8960 audio codec: register the snd_soc_component with DAI definitions, DAPM widgets, and mixer controls using snd_soc_register_component().','C','A'],
+  ['Write an ASoC platform driver that implements DMA-based PCM: allocate DMA buffers, implement dma_data pointer for hw_params, and start/stop the DMA engine in trigger().','C','A'],
+  ['Write an ASoC machine driver that links the WM8960 codec to an I2S platform driver. Define the dai_link with format, sysclk, and set_bias_level callbacks.','C','A'],
+  ['Write a simple ALSA driver that creates a virtual sound card with a PCM device. Implement pointer() to return a counter position and use a timer to advance it, creating a loopback device.','C','I'],
+  ['Use aplay, arecord, amixer, and alsamixer to inspect and control a sound card. Write a shell script that configures a capture/playback loopback and measures round-trip latency.','C','B'],
+  ['Use the tinyalsa tools (tinymix, tinyplay, tinycap) to configure and test audio on an embedded device without PulseAudio. Identify the correct card/device indices from /proc/asound.','C','B'],
+  ['What is the snd_pcm_runtime structure? What fields must the driver update: dma_addr, dma_area, buffer_size, period_size, hw_ptr?','T','I'],
+  ['What is the difference between period size and buffer size in ALSA? How does the period interrupt from the DMA engine relate to the ALSA period?','T','I'],
+  ['What is audio clock synchronization? How does a codec driver use a PLL to derive the audio master clock from a system reference clock?','T','I'],
+  ['Design the ASoC audio system for an automotive head unit: 8-channel TDM I2S output to an amplifier, 4-channel PDM input from microphones, and HDMI audio output. Describe the machine driver dai_links.','T','A']
+  ]
+},
+{
+  id:'m15',phase:2,num:'15',icon:'📷',
+  title:'Camera Drivers — V4L2 & Sensor Drivers',
+  desc:'V4L2 sensor driver, subdev, media controller, MIPI CSI-2, ISP integration, camera pipeline design.',
+  qs:[
+  ['What is a V4L2 sensor driver? What is v4l2_subdev and how does a sensor register itself vs a full video device?','T','B'],
+  ['What are the V4L2 subdev pad operations? Describe get_fmt(), set_fmt(), enum_mbus_code(), and get_selection().','T','I'],
+  ['What is the MIPI CSI-2 protocol? Describe the physical layer (D-PHY), the packet structure (long packet, short packet), and the data types (RAW10, RAW12, YUV422).','T','I'],
+  ['What is the media controller framework? How do entities, pads, and links model an ISP pipeline?','T','I'],
+  ['What is V4L2 async subdev registration? How does v4l2_async_register_subdev() allow the ISP driver to discover a sensor driver without a direct probe order dependency?','T','I'],
+  ['What is a V4L2 buffer? Describe the REQBUFS, QUERYBUF, QBUF, STREAMON, DQBUF ioctl sequence for DMABUF sharing between camera and GPU.','T','I'],
+  ['What are V4L2 controls? How does v4l2_ctrl_new_std() add exposure, gain, and white balance controls to a sensor driver?','T','B'],
+  ['What is the V4L2 request API? How does it allow user space to synchronize per-frame parameters (exposure, gain) with specific captured frames?','T','A'],
+  ['What is RAW Bayer format? Describe the four Bayer patterns (RGGB, GRBG, BGGR, GBRG) and how an ISP debayers them.','T','I'],
+  ['What is auto-exposure (AE) and auto-white-balance (AWB) in a camera driver? Are they implemented in kernel or user space, and why?','T','I'],
+  ['Write a complete V4L2 sensor driver for the OV5640 camera (I2C, MIPI CSI-2): probe reads sensor ID, s_stream enables MIPI output, set_fmt programs resolution and frame rate.','C','A'],
+  ['Write a V4L2 subdev driver for a MIPI CSI-2 receiver IP core: implement pad link setup, stream start/stop, and DMA to V4L2 buffers.','C','A'],
+  ['Write a media-ctl pipeline script for a Rockchip ISP: link sensor -> MIPI CSI-2 RX -> ISP input -> ISP output -> video node. Verify the pipeline with media-ctl -p.','C','I'],
+  ['Write a user-space camera capture application using V4L2 DMABUF: request buffers, export as dma-buf fds, import into an OpenGL ES texture, render to display without CPU copy.','C','A'],
+  ['Write V4L2 controls for a sensor driver: add V4L2_CID_EXPOSURE (integer), V4L2_CID_GAIN (integer), V4L2_CID_HFLIP (boolean). Implement s_ctrl() to write sensor registers via I2C.','C','I'],
+  ['Use v4l2-ctl to capture a frame from a CSI-2 camera: negotiate format, start streaming, capture one frame as raw Bayer, convert to PNG with dcraw and view.','C','B'],
+  ['What is the libcamera architecture? How does it replace the kernel ISP driver for user-space ISP control? What kernel interfaces does it still use?','T','A'],
+  ['What is the difference between the sensor native format (RAW Bayer) and the ISP output format (NV12, YUYV)? What processing stages happen between them?','T','I'],
+  ['What is PDAF (Phase Detection Auto Focus) and how does a dual-pixel sensor expose PDAF data alongside image data to the camera driver?','T','A'],
+  ['Design a multi-camera synchronization driver for a 4-camera 360-degree capture system. All cameras must start exposure within 100 microseconds. Describe the hardware trigger, device tree, and V4L2 driver design.','T','A']
+  ]
+},
+{
+  id:'m16',phase:2,num:'16',icon:'📟',
+  title:'Serial & UART Drivers',
+  desc:'tty subsystem, uart_driver, uart_port, line disciplines, RS-485, real UART driver walkthrough.',
+  qs:[
+  ['What is the TTY layer? Describe the three layers: user space, line discipline, and the UART driver.','T','B'],
+  ['What is a line discipline? What does the default N_TTY line discipline do (canonical mode, raw mode, echo, signal generation)?','T','B'],
+  ['What is uart_driver and uart_port? How does a UART driver register them with the serial core?','T','B'],
+  ['What are the uart_ops function pointers? Describe startup(), shutdown(), set_termios(), tx_empty(), start_tx(), stop_tx().','T','B'],
+  ['What is the difference between 8250/16550 (legacy UART) and a modern SoC UART? What compatibility layer does the kernel provide?','T','B'],
+  ['What is RS-485? How does a driver implement half-duplex RS-485 by asserting an RTS/GPIO pin before transmit and deasserting after?','T','I'],
+  ['What is the circ_buf (circular buffer) in the UART driver? How does the serial core use uart_port.state->xmit for TX buffering?','T','I'],
+  ['What is FIFO threshold in a UART? How does setting the RX FIFO trigger level affect interrupt frequency and latency?','T','I'],
+  ['What is DMA support in a UART driver? How does a driver use the dmaengine API for high-throughput UART transfers?','T','I'],
+  ['What is a USB-to-serial adapter driver? How does it sit between the USB subsystem and the TTY serial core?','T','I'],
+  ['Write a minimal UART driver for a simple SoC UART: implement startup, shutdown, set_termios (baud rate, parity, stop bits), IRQ handler that reads RX FIFO and calls tty_insert_flip_char().','C','A'],
+  ['Write a line discipline driver (N_CUSTOM) that strips framing bytes from a custom serial protocol. Register it with tty_register_ldisc() and open it with TIOCSETD ioctl.','C','A'],
+  ['Write a user-space serial port test: open /dev/ttyS0, configure with termios (115200 8N1 raw mode), send a command, and read the response with a 100ms timeout.','C','B'],
+  ['Add DMA support to your UART driver: map the TX circular buffer for DMA, submit a dma_async_tx_descriptor, and signal TX completion in the DMA callback.','C','A'],
+  ['Implement RS-485 half-duplex mode in your UART driver using the serial_rs485 structure and set_rs485_config(). Test with two devices connected via an RS-485 transceiver.','C','I'],
+  ['Use minicom or picocom to test a serial connection. Use stty to inspect and modify termios settings. Capture raw bytes with xxd to debug a framing protocol.','C','B'],
+  ['What is flow control? Compare software flow control (XON/XOFF) and hardware flow control (RTS/CTS) and how the UART driver implements each.','T','B'],
+  ['What is TIOCMGET and TIOCMSET? How do you control and read modem control lines (DTR, RTS, CTS, DSR) from user space and from a driver?','T','I'],
+  ['What is the serial console? How does a UART register as a kernel console (uart_console_write) and how early does it become available during boot?','T','I'],
+  ['Design a UART driver for an automotive diagnostic interface (ISO 9141-2) with precise 5-baud initialization sequence, custom parity, and deterministic byte timing under 1ms.','T','A']
+  ]
+},
+{
+  id:'m17',phase:3,num:'17',icon:'🔭',
+  title:'Sensor Fusion & IIO Subsystem',
+  desc:'IIO devices, channels, triggers, buffers, kfifo, IMU drivers, barometer, magnetometer, real pipelines.',
+  qs:[
+  ['What is the IIO (Industrial I/O) subsystem? What types of sensors does it support and what is its relationship to the input subsystem?','T','B'],
+  ['What is an IIO channel? What is iio_chan_spec and what fields describe the channel (type, indexed, channel, info_mask, scan_type)?','T','B'],
+  ['What is an IIO trigger? How does a hardware interrupt or hrtimer trigger a batch read of sensor data into the IIO buffer?','T','I'],
+  ['What is the IIO triggered buffer? How does iio_triggered_buffer_setup() connect a trigger, a kfifo ring buffer, and a pollfunc?','T','I'],
+  ['What is the IIO buffer? How does user space read batched sensor samples from /dev/iio:device0 using read() or mmap?','T','I'],
+  ['What is iio_push_to_buffers_with_timestamp()? How does a driver push a complete sample with a 64-bit kernel timestamp?','T','B'],
+  ['What is the IIO event interface? How does a driver generate threshold-crossing or free-fall detection events to user space?','T','I'],
+  ['What is the IIO hardware trigger (iio_trigger)? How does an external hardware signal (e.g., data-ready GPIO) trigger sample capture?','T','I'],
+  ['What is sensor calibration data? How does an IIO driver apply factory calibration from DT properties or EEPROM to raw ADC counts?','T','I'],
+  ['What is sensor fusion at the driver level? How does an IMU driver combine accelerometer and gyroscope data into a single IIO device with both channel types?','T','I'],
+  ['Write a complete IIO driver for the BMI088 IMU (SPI): accelerometer and gyroscope channels, hardware data-ready interrupt as IIO trigger, triggered buffer with timestamp, configurable ODR via sysfs.','C','A'],
+  ['Write an IIO driver for the BMP388 barometer (I2C): pressure and temperature channels, IIR filter and oversampling configurable via sysfs, triggered buffer.','C','I'],
+  ['Write an IIO driver for a 12-bit ADC (ADS1115, I2C): 4 single-ended channels, configurable gain, hardware comparator as event source for threshold detection.','C','I'],
+  ['Write an IIO driver for the LIS3MDL magnetometer (SPI): X/Y/Z channels, configurable full-scale range, hardware data-ready IRQ, triggered buffer.','C','I'],
+  ['Write a user-space IIO application using libiio: open a device, configure channels, enable a trigger, and read 1000 samples from the buffer. Compute and print mean and variance.','C','I'],
+  ['Build a sensor fusion pipeline: IMU driver provides accel+gyro, magnetometer provides mag, a user-space fusion library (Madgwick filter) computes quaternion orientation at 200Hz.','C','A'],
+  ['What is the IIO demux? How does the buffer demux allow multiple readers to receive the same sensor data independently?','T','A'],
+  ['What is IIO backend? How does the new IIO backend API separate the frontend (channel/buffer) from the backend (hardware ADC implementation)?','T','A'],
+  ['What is the difference between iio_read_channel_raw() (in-kernel consumer API) and reading from sysfs? When would another kernel driver consume IIO data?','T','I'],
+  ['Design a complete IIO sensor hub driver for an autonomous vehicle ADAS sensor board: 6-axis IMU, 3-axis magnetometer, barometer, and 4-channel temperature sensor. All share one SPI bus and one data-ready IRQ. Describe the driver structure and synchronization.','T','A']
+  ]
+},
+{
+  id:'m18',phase:3,num:'18',icon:'🎥',
+  title:'ISP & Advanced Camera Pipeline Drivers',
+  desc:'ISP driver internals, Rockchip ISP, i.MX8 ISI, libcamera, 3A algorithms, DMA-BUF pipeline.',
+  qs:[
+  ['What is an ISP (Image Signal Processor)? What pipeline stages does it implement (demosaic, AWB, AE, ANR, sharpening, gamma)?','T','I'],
+  ['What is the Rockchip ISP1/ISP2 driver architecture? How does it model the pipeline with media entities and V4L2 subdevs?','T','A'],
+  ['What is the i.MX8MP ISI (Image Sensing Interface)? How does it route camera data from CSI-2 to DDR without ISP processing?','T','A'],
+  ['What is the V4L2 subdev internal pad link? How does the ISP driver internally connect the MIPI RX pad to the ISP input pad?','T','I'],
+  ['What is the difference between capture path and statistics path in an ISP driver? How does the driver expose AE/AWB statistics to user space via a separate V4L2 video node?','T','A'],
+  ['What is the 3A (Auto Exposure, Auto White Balance, Auto Focus) algorithm? Should it run in kernel or user space and what data does it consume from the ISP?','T','I'],
+  ['What is the V4L2 request API in the context of ISP drivers? How does it allow per-frame ISP parameter updates synchronized to specific frame captures?','T','A'],
+  ['What is the difference between a pass-through ISP (no processing, raw DMA only) and a full-featured ISP? When does an embedded system use each?','T','I'],
+  ['What is libcamera? How does it replace kernel-side ISP tuning with a user-space pipeline manager? What kernel interfaces does it still use (V4L2, media-ctl, request API)?','T','A'],
+  ['What is CameraHAL3 (Android Camera HAL3)? How does it map to the V4L2 request API in the kernel?','T','A'],
+  ['Write an ISP platform driver stub: register the main video node, statistics video node, and parameters video node. Link them via the media controller to a sensor subdev.','C','A'],
+  ['Write a media-ctl and v4l2-ctl script that configures a full Rockchip ISP pipeline from sensor to output, sets a custom resolution, and captures 10 frames.','C','I'],
+  ['Write a V4L2 request API application: queue a capture request, attach parameters (exposure, gain), capture a frame, and read back the statistics buffer. Implement a basic AE control loop.','C','A'],
+  ['Write a DMA-BUF zero-copy pipeline: ISP driver exports capture buffers as dma-buf fds, a GPU encoder imports them, encodes H.264, and writes to file. Verify no CPU copy with /proc/<pid>/smaps.','C','A'],
+  ['Write a Python (or C) AE/AWB algorithm using libcamera IPA (Image Processing Algorithm) plugin interface. Process histogram statistics and compute new exposure/gain values.','C','A'],
+  ['Profile an ISP capture pipeline using perf and ftrace. Identify the latency from sensor frame-start signal to DMA completion. Optimize by tuning DMA burst size.','C','A'],
+  ['What is HDR (High Dynamic Range) capture? How does a staggered HDR mode work (short+long exposure interleaved frames) in a CSI-2 sensor and ISP driver?','T','A'],
+  ['What is computational photography at the driver level? How does a driver support multi-frame RAW capture (for night mode stack) with synchronized per-frame metadata?','T','A'],
+  ['What is camera sensor calibration (PDAF, lens shading, color matrix)? Where is it stored (OTP, DT, userspace tuning file) and how does the driver or ISP apply it?','T','A'],
+  ['Design the complete camera system software stack for a drone collision avoidance system: stereo CSI-2 cameras, ISP pipeline, depth computation in GPU, obstruction detection in CPU. Describe every driver interface.','T','A']
+  ]
+},
+{
+  id:'m19',phase:3,num:'19',icon:'🎵',
+  title:'Advanced Audio — DSP, Codec, and Real-World Audio',
+  desc:'DSP firmware loading, compress offload, HDMI audio, Bluetooth audio, real codec deep dives.',
+  qs:[
+  ['What is firmware loading in an audio DSP driver? How does request_firmware() work and what formats (ELF, ihex, binary) does the firmware loader support?','T','I'],
+  ['What is ASoC compress offload? How does the snd_compr_ops allow a DSP to decompress audio (MP3, AAC) in hardware while the CPU sleeps?','T','A'],
+  ['What is the difference between an HDaudio (Intel HDA) codec driver and an ASoC codec driver? When does a system use each?','T','I'],
+  ['What is the sound card topology (ASoC topology)? How does snd_soc_tplg allow DSP firmware to define controls and widgets without rebuilding the kernel?','T','A'],
+  ['What is HDMI audio? Walk through the flow from the application to the HDA controller to HDMI infoframe transmission to the TV.','T','I'],
+  ['What is Bluetooth audio in Linux? How does BlueZ + PipeWire/PulseAudio implement A2DP and LC3 (LE Audio) without a kernel audio driver?','T','I'],
+  ['What is PipeWire? How does it replace PulseAudio and JACK? What kernel APIs does it use (ALSA, V4L2, Bluetooth)?','T','I'],
+  ['What is a DPCM pipeline? How does it allow a smartphone audio system to route voice call audio through a modem DSP while music plays on the application DSP?','T','A'],
+  ['What is echo cancellation (AEC) in an audio driver? At what layer (codec firmware, DSP, or user space) is it typically implemented?','T','I'],
+  ['What is TDM (Time Division Multiplexing) audio? How does a driver configure an 8-slot TDM frame to carry 8 audio channels over a single I2S bus?','T','I'],
+  ['Write an ASoC machine driver for an embedded board with a TAS5756 I2S amplifier: define dai_link with I2S format and 48kHz sysclk, implement set_bias_level to power down the amp on idle.','C','A'],
+  ['Write firmware loading and initialization for a Qualcomm ADSP audio DSP: use request_firmware(), write firmware segments to device memory via remoteproc, and wait for the DSP ready mailbox interrupt.','C','A'],
+  ['Write a compress offload driver that receives an MP3 stream from user space, writes it to a hardware DSP decode queue, and signals playback completion via snd_compr_fragment_elapsed().','C','A'],
+  ['Write an ASoC topology binary blob for a simple mixer with two playback paths: headphone and speaker, with volume controls. Compile with alsatplg and load at runtime.','C','A'],
+  ['Implement a multi-rate audio system: 48kHz recording from microphone, real-time pitch shift on DSP, 44.1kHz playback. Handle the sample rate conversion in the platform driver.','C','A'],
+  ['Use tinyalsa tinymix to configure an automotive audio amplifier (TAS5825M via I2C). Set up EQ, limiter, and speaker protection. Verify with a signal generator and oscilloscope.','C','I'],
+  ['What is the ALSA UCM (Use Case Manager)? How does it allow user space to reconfigure audio paths (speaker to headphone) without knowing card-specific mixer control names?','T','I'],
+  ['What is the difference between a hardware mixer and a software mixer? When does the kernel mix multiple streams in hardware vs using dmix in ALSA?','T','I'],
+  ['What is audio clock recovery (ASRC)? Why is it needed when connecting audio devices on different clock domains, and how is it implemented in hardware and driver?','T','I'],
+  ['Design the audio system driver stack for a smart speaker: wake-word detection DSP, 6-microphone beamforming array via TDM, echo cancellation, and cloud ASR upload. Describe every driver and user-space component.','T','A']
+  ]
+},
+{
+  id:'m20',phase:3,num:'20',icon:'📡',
+  title:'Wireless & Bluetooth Drivers (mac80211 / btusb)',
+  desc:'mac80211, cfg80211, FullMAC vs SoftMAC, firmware, bt_dev, HCI layer, real WiFi driver walkthrough.',
+  qs:[
+  ['What is cfg80211? What is its role and how does it differ from mac80211?','T','B'],
+  ['What is mac80211? What does it implement for a SoftMAC WiFi driver (rate control, aggregation, scanning, association state machine)?','T','I'],
+  ['What is a FullMAC WiFi driver? How does it interact with cfg80211 compared to a SoftMAC driver that uses mac80211?','T','I'],
+  ['What is ieee80211_ops? Describe the most important callbacks: tx(), start(), stop(), add_interface(), config(), bss_info_changed(), set_key().','T','I'],
+  ['How does a WiFi driver handle the TX path: from ieee80211_tx() in mac80211 down to the driver tx() callback, DMA, and TX completion?','T','I'],
+  ['How does a WiFi driver handle the RX path: from the IRQ/DMA completion callback up to ieee80211_rx() which delivers to the network stack?','T','I'],
+  ['What is WiFi firmware loading? How does a driver use request_firmware() to load radio firmware, and what is the firmware-host interface (mailbox, shared memory)?','T','I'],
+  ['What is power save mode in a WiFi driver? How does the driver communicate with the AP via PS-Poll and null data frames?','T','I'],
+  ['What is the Bluetooth HCI (Host Controller Interface) layer in Linux? How does btusb map USB to HCI commands and events?','T','B'],
+  ['What is the difference between HCI, L2CAP, RFCOMM, and SCO layers in the BlueZ stack? Which run in kernel and which in user space?','T','I'],
+  ['Write a minimal cfg80211/mac80211 WiFi driver stub: register a wiphy, implement add_interface() and remove_interface(), hw_scan(), and a loopback TX/RX path for testing.','C','A'],
+  ['Add WPA key management to your WiFi driver stub: implement set_key() to store a CCMP key and apply it in the TX/RX path in software.','C','A'],
+  ['Write a btusb-compatible Bluetooth driver: register an hci_dev, implement hci_open, hci_close, hci_send_frame (USB bulk URB), and receive URB callback that calls hci_recv_frame.','C','A'],
+  ['Use iw and wpa_supplicant to trace a complete WPA2 association: scan, authenticate, 4-way handshake, DHCP. Correlate each step with kernel debug output (mac80211 debug=0xffffffff).','C','I'],
+  ['Use hcitool and btmon to trace a Bluetooth LE advertisement scan, connection setup, and GATT characteristic read. Identify each HCI command and event.','C','I'],
+  ['Use bpftrace to trace mac80211 TX queue stops and wakes during a WiFi link with packet loss. Correlate with iwconfig retry stats.','C','I'],
+  ['What is SDIO WiFi? How does a WiFi chip connected via SDIO use the MMC/SDIO kernel subsystem for register access and interrupt?','T','I'],
+  ['What is WiFi 6 (802.11ax) OFDMA? What new mac80211 ops and APIs does it require compared to 802.11n?','T','A'],
+  ['What is the nl80211 interface? How does user space (iw, wpa_supplicant) communicate with cfg80211 via Netlink?','T','I'],
+  ['Design a WiFi driver for a low-power IoT chip (like ESP32 as network co-processor): the chip handles RF and MAC in firmware, the driver communicates via SPI with a custom framing protocol. Describe the driver layers.','T','A']
+  ]
+},
+{
+  id:'m21',phase:3,num:'21',icon:'🚗',
+  title:'CAN Bus & Automotive Drivers',
+  desc:'SocketCAN, can_dev, CAN FD, ISOTP, LIN bus, real CAN controller drivers, automotive middleware.',
+  qs:[
+  ['What is CAN bus? What are its physical layer characteristics, arbitration mechanism, and error detection features?','T','B'],
+  ['What is SocketCAN? How does it expose CAN devices as network interfaces and what socket type (AF_CAN, SOCK_RAW) is used?','T','B'],
+  ['What is can_dev? Describe can_priv, netdev_priv, and the relationship between a CAN network device and a standard net_device.','T','B'],
+  ['What are the CAN error frames? How does a driver signal error passive, bus-off, and CRC errors to user space via SocketCAN?','T','I'],
+  ['What is CAN FD (Flexible Data-rate)? How does it differ from Classical CAN in frame format and bitrate? What driver changes are needed?','T','I'],
+  ['What is ISOTP (ISO 15765-2)? How does the can-isotp kernel module implement multi-frame CAN transport for diagnostic messages?','T','I'],
+  ['What is LIN bus? How does it differ from CAN and what kernel driver support exists for LIN (via UART or dedicated LIN controller)?','T','I'],
+  ['What is the difference between a SJA1000-compatible CAN controller driver and a Microchip MCP2515 (SPI-connected) CAN driver?','T','I'],
+  ['What is can_rx_offload? How does it batch CAN frame reception from hardware into a ring buffer to reduce IRQ overhead?','T','I'],
+  ['What is the SocketCAN timestamping? How does hardware timestamping (SO_TIMESTAMPING) provide accurate bus-level timestamps for CAN frames?','T','I'],
+  ['Write a SocketCAN client: open a raw CAN socket on vcan0, send a CAN frame with candump-style formatting, receive 10 frames, and print each with ID, DLC, and data.','C','B'],
+  ['Write a kernel CAN controller driver for a simple SPI-attached CAN chip: implement can_start_xmit(), the RX IRQ handler (read frame, call netif_rx()), and bus-off recovery.','C','A'],
+  ['Write an ISOTP application that reads UDS (Unified Diagnostic Services) diagnostic data from an ECU: send 0x09 02 (VIN request), receive and decode the multi-frame response.','C','I'],
+  ['Set up a virtual CAN network with vcan and cangw. Use cangw to route frames between two vcan interfaces with a bitrate mismatch (CAN FD to Classic CAN). Log with candump.','C','I'],
+  ['Implement a CAN bus logger that captures all frames with hardware timestamps and writes them to a .asc (ASCII) log file compatible with Vector CANalyzer format.','C','I'],
+  ['Write a CAN FD driver extension: support BRS (Bit Rate Switch) and ESI (Error State Indicator) bits. Configure dual bitrate (500kbit arbitration, 2Mbit data) in can_bittiming.','C','A'],
+  ['What is the J1939 protocol? How does the Linux j1939 module implement address claiming and PGN-based transport on top of SocketCAN?','T','I'],
+  ['What is SAE J2534 (PassThru)? How does a PC-based OBD-II interface expose itself to reprogramming tools and how is it related to SocketCAN?','T','I'],
+  ['What is AUTOSAR COM stack? How does it sit above the Linux SocketCAN layer in an AUTOSAR-compliant ECU software architecture?','T','A'],
+  ['Design a CAN-to-Ethernet gateway driver: receives CAN frames, bundles them into UDP packets with timestamps, and sends to a cloud logging service. Describe buffering, timestamping, and error handling.','T','A']
+  ]
+},
+{
+  id:'m22',phase:3,num:'22',icon:'🔌',
+  title:'Power Management in Drivers',
+  desc:'Runtime PM, system suspend/resume, dev_pm_ops, DVFS, wake locks, real driver PM implementation.',
+  qs:[
+  ['What is runtime PM? Describe the state machine (active, suspended, suspending) and the API: pm_runtime_get(), pm_runtime_put(), pm_runtime_enable().','T','B'],
+  ['What is the dev_pm_ops structure? Describe every callback: suspend, resume, freeze, thaw, poweroff, restore, runtime_suspend, runtime_resume, runtime_idle.','T','I'],
+  ['What is a wakeup source? How does device_init_wakeup() and enable_irq_wake() allow a device to wake the system from suspend?','T','I'],
+  ['What is DVFS (Dynamic Voltage and Frequency Scaling)? How does a driver use the devfreq framework to adjust device frequency based on load?','T','I'],
+  ['What is the OPP (Operating Performance Point) table? How does a driver use dev_pm_opp_get_opp_count() and dev_pm_opp_find_freq_exact()?','T','I'],
+  ['What is the difference between pm_runtime_autosuspend() and pm_runtime_suspend()? How does the autosuspend delay prevent excessive suspend/resume cycles?','T','I'],
+  ['What is prepare()/complete() in dev_pm_ops? How do they differ from suspend()/resume() in the order and context in which they are called?','T','I'],
+  ['What is the noirq phase in system suspend? Why is suspend_noirq() called after IRQs are disabled and what driver work belongs there?','T','I'],
+  ['What is late_suspend() and early_resume()? How do they allow drivers to defer suspend until the last possible moment?','T','I'],
+  ['What is the pm_domain framework? How does an SoC power domain driver gate clocks and power rails for a group of devices?','T','I'],
+  ['Write a platform driver with full runtime PM: implement runtime_suspend to gate the clock and power down the device, runtime_resume to restore it, with a 2-second autosuspend delay.','C','I'],
+  ['Implement system suspend and resume in a DMA driver: in suspend_noirq(), flush all pending DMA, save register state; in resume_noirq(), restore state and re-enable DMA.','C','A'],
+  ['Write a devfreq driver for a hypothetical memory controller: implement get_dev_status() to report load, and target() to set frequency via the clock framework. Use the simple_ondemand governor.','C','A'],
+  ['Instrument runtime PM transitions with ftrace: trace pm_runtime_get, pm_runtime_put, and __pm_runtime_suspend. Visualize the power timeline during a workload.','C','I'],
+  ['Enable CONFIG_PM_DEBUG and use the PM debug interfaces (/sys/power/pm_test) to test suspend transitions without actually suspending. Verify your driver callbacks fire in order.','C','I'],
+  ['Write a wakeup source driver for a GPIO button: register the button as a wakeup source, enable irq wake, and verify the system wakes from S3 when the button is pressed.','C','I'],
+  ['What is the pm_qos (Power Management Quality of Service) framework? How does a latency-sensitive driver register a pm_qos_request to prevent deep idle states?','T','I'],
+  ['What is the genpd (Generic Power Domain) framework? How does a device declare its power domain dependency in device tree and the genpd driver implement power on/off?','T','I'],
+  ['What is the difference between clock gating, power gating, and voltage scaling? Which PM mechanism is appropriate for short idle periods vs long idle periods?','T','I'],
+  ['Design the power management strategy for an automotive camera module: during parking (engine off), the camera must wake within 200ms on motion detection while consuming under 1mW in standby.','T','A']
+  ]
+},
+{
+  id:'m23',phase:3,num:'23',icon:'🔒',
+  title:'Driver Security & Hardening',
+  desc:'Driver attack surface, input validation, ioctl hardening, seccomp, fuzzing with syzkaller, CVE analysis.',
+  qs:[
+  ['What are the most common driver security vulnerabilities? List 6 categories (integer overflow, use-after-free, info leak, race condition, out-of-bounds, uninitialized memory) with driver examples.','T','I'],
+  ['What is an ioctl number and how does _IOC(), _IO(), _IOR(), _IOW(), _IOWR() encode direction and size? How does this prevent argument confusion?','T','B'],
+  ['What is kernel info leak? How can a driver accidentally expose kernel addresses to user space? Give 3 concrete examples.','T','I'],
+  ['What is a time-of-check to time-of-use (TOCTOU) race in a driver? Describe an ioctl argument validation race and how to fix it.','T','I'],
+  ['What is use-after-free in a driver? How does the file_operations release() callback race with in-flight reads/writes?','T','I'],
+  ['What is KASAN? How does it detect use-after-free and out-of-bounds in driver code at runtime?','T','I'],
+  ['What is syzkaller? How does it fuzz kernel driver interfaces (ioctls, system calls, /proc) to find bugs?','T','I'],
+  ['What is copy_from_user() with size validation? What is the __user annotation and how does sparse find missing checks?','T','B'],
+  ['What is a kernel stack info leak? How do uninitialized local variables in ioctl handlers leak kernel memory?','T','I'],
+  ['What is the difference between a NULL pointer dereference crash and a NULL dereference exploit? What kernel mitigations prevent NULL page mapping?','T','I'],
+  ['Audit a simple ioctl handler for security issues: check for missing copy_from_user, unvalidated size fields, missing range checks, and potential integer overflows.','C','I'],
+  ['Write a syzkaller syz-prog description for a custom character device ioctl. Run syzkaller against a VM and triage any crashes found.','C','A'],
+  ['Enable KASAN, lockdep, and UBSAN in a test kernel build. Write a module with a heap UAF and show the KASAN report with allocation/free call stacks.','C','I'],
+  ['Write a seccomp-BPF policy that restricts a user-space driver application to only the syscalls it actually needs. Verify no extra syscalls are made with strace.','C','I'],
+  ['Reproduce CVE-2017-11176 (mq_notify use-after-free) or a similar driver CVE in a vulnerable kernel VM. Analyze the root cause and write the fix.','C','A'],
+  ['Write a fuzzing harness using libFuzzer for a kernel driver parse function exported via a file operation. Identify boundary conditions not covered by unit tests.','C','A'],
+  ['What is the difference between a local privilege escalation (LPE) via a driver and a remote kernel exploit? What attack vectors does each require?','T','A'],
+  ['What is CONFIG_HARDENED_USERCOPY? What specific driver bug class does it prevent and what overhead does it add?','T','I'],
+  ['What is a type confusion vulnerability in a driver? How does it occur when a union is misused in an ioctl argument structure?','T','I'],
+  ['Design a threat model for a new character device driver: identify the trust boundary, all input vectors, potential attack surfaces, and required mitigations.','T','A']
+  ]
+},
+{
+  id:'m24',phase:3,num:'24',icon:'🧪',
+  title:'Driver Testing, CI & Validation',
+  desc:'KUnit, kselftest, QEMU driver testing, virtio, kvm-based CI, automated driver regression testing.',
+  qs:[
+  ['What is KUnit? How does it differ from kselftest? When would you write a KUnit test vs a kselftest?','T','B'],
+  ['What is kselftest? How do you write a C-based kernel self-test and integrate it into tools/testing/selftests/?','T','B'],
+  ['What is QEMU virtio? How does it allow driver testing in a VM with virtual hardware that exercises real driver code paths?','T','B'],
+  ['What is the virtio specification? How does the virtio-blk or virtio-net frontend driver in Linux communicate with QEMU backend?','T','I'],
+  ['How do you test a DMA driver in QEMU? What QEMU devices support DMA and how do you configure them?','T','I'],
+  ['What is GKI (Generic Kernel Image) compliance? What constraints does it place on driver code for Android kernel drivers?','T','A'],
+  ['What is the Linux kernel CI system (KernelCI, 0day bot)? How does it automatically build and test patches?','T','I'],
+  ['What is a test doubles pattern for kernel drivers? How do you mock hardware registers using a memory-backed simulation?','T','I'],
+  ['What is code coverage in the kernel? How does kcov instrument code and how do you use it with syzkaller?','T','I'],
+  ['What is the LKFT (Linaro Kernel Functional Test)? What boards and test suites does it run automatically on new kernel releases?','T','I'],
+  ['Write a KUnit test for a register manipulation function in a platform driver: mock the ioremap address with a local buffer, call the function, assert the correct bytes were written.','C','I'],
+  ['Write a kselftest for a character device: open /dev/mydev, write data, read it back, compare, and report pass/fail using the ksft_* API.','C','B'],
+  ['Write a QEMU virtio-serial backend and a corresponding Linux kernel frontend driver. Send a string from the VM to QEMU and print it.','C','A'],
+  ['Set up a QEMU-based CI pipeline: boot a kernel in QEMU, insmod your module, run kselftest, check exit code, report pass/fail.','C','I'],
+  ['Write a KUnit test that injects an I2C read failure (mock i2c_transfer returns -EIO) and verifies that your sensor driver returns the correct error from probe().','C','I'],
+  ['Use kcov to measure the code coverage of your driver during a kselftest run. Identify uncovered branches and add test cases for them.','C','A'],
+  ['What is the difference between unit testing and integration testing for a kernel driver? What can only be tested on real hardware?','T','I'],
+  ['What is libvirt/QEMU PCIe device assignment? How do you pass a real PCIe device to a VM for driver testing?','T','I'],
+  ['What is the hikey960/Rockchip board farm in KernelCI? How does it automatically run driver tests on physical ARM hardware?','T','I'],
+  ['Design a complete CI pipeline for a camera driver: automated test on QEMU (unit tests), automated test on real hardware (functional tests with a pattern generator), and automated regression detection.','T','A']
+  ]
+},
+{
+  id:'m25',phase:3,num:'25',icon:'📲',
+  title:'Real-World Driver Case Studies',
+  desc:'Dissecting production drivers: Raspberry Pi camera, Intel i915, brcmfmac WiFi, snd-usb-audio, stm32 UART.',
+  qs:[
+  ['Walk through the Raspberry Pi camera stack: BCM2835 MMAL firmware interface, bcm2835-unicam CSI-2 driver, v4l2-compat-ioctl, and libcamera on top.','T','A'],
+  ['Walk through the Intel i915 DRM driver: GEM buffer management, GuC firmware, ring buffer command submission, page flip, and display modesetting.','T','A'],
+  ['Walk through the brcmfmac WiFi driver: SDIO/PCIe transport, firmware download, cfg80211/mac80211 integration, and WoWLAN (wake-on-WLAN) support.','T','A'],
+  ['Walk through the snd-usb-audio driver: USB descriptor parsing, isochronous URB ring setup, ALSA PCM integration, and sample rate conversion.','T','A'],
+  ['Walk through the STM32 UART driver (stm32-usart): DMA TX/RX with ring buffer, RS-485 half-duplex, DMA threshold, and wakeup-from-suspend support.','T','A'],
+  ['Walk through the Qualcomm rmnet driver: MHI (Modem Host Interface) transport, multiplexing protocol, and how it presents a network interface to the OS.','T','A'],
+  ['Read the source of drivers/net/ethernet/intel/igb/igb_main.c. Describe the TX descriptor ring management: how descriptors are written, how completion is detected, how the tail pointer is updated.','T','A'],
+  ['Read drivers/media/i2c/imx219.c (Raspberry Pi camera sensor driver). Explain how it programs exposure and gain registers, handles MIPI format negotiation, and integrates with v4l2_subdev.','T','A'],
+  ['Read drivers/usb/serial/cp210x.c. Explain how it maps USB control requests to UART configuration (baud rate, parity) and uses bulk URBs for data.','T','A'],
+  ['Read sound/soc/codecs/wm8960.c. Explain its DAPM widget graph, the PLL configuration for clock generation, and the ASoC control interface.','T','A'],
+  ['Add a new feature to the STM32 UART driver: implement hardware FIFO threshold configuration via a DT property (st,fifo-threshold-rx). Submit-quality patch with changelog.','C','A'],
+  ['Write a bug fix for a real driver issue: find a reported kernel bug in a driver (from lkml or bugzilla), reproduce it in QEMU, write a fix, and prepare a patch with fixes tag.','C','A'],
+  ['Port an out-of-tree vendor camera sensor driver to mainline style: remove proprietary ioctls, use proper V4L2 controls, add DT binding YAML, add KUnit tests.','C','A'],
+  ['Instrument the i915 driver with bpftrace: trace GEM buffer allocation and freeing. Build a histogram of buffer lifetimes during a Wayland session.','C','A'],
+  ['Compare the brcmfmac and rtw88 WiFi driver architectures. Draw a diagram showing where each handles 802.11 MAC operations (software vs firmware).','C','A'],
+  ['Use ftrace to trace all function calls in the bcm2835-unicam CSI-2 driver during a single frame capture. Draw the call tree and identify the critical path.','C','A'],
+  ['What design patterns are common across production drivers that are absent from tutorial drivers (error recovery, runtime PM, multi-instance, thread safety)?','T','A'],
+  ['What is the typical review process for a new subsystem driver submission to mainline? What does a maintainer check beyond functional correctness?','T','I'],
+  ['What is a stable backport? How does the kernel stable team evaluate whether a driver fix is safe to backport to older kernels?','T','I'],
+  ['Design a production-quality driver for a new embedded SoC peripheral from scratch. List all the steps from hardware bring-up to merged mainline driver, with estimated time for each phase.','T','A']
+  ]
+},
+{
+  id:'m26',phase:3,num:'26',icon:'🏭',
+  title:'Industrial & Embedded Driver Applications',
+  desc:'Industrial I/O, EtherCAT, PLC interfaces, motor control, FPGA drivers, safety-critical driver design.',
+  qs:[
+  ['What is EtherCAT? How does it use standard Ethernet hardware in real-time master mode and what Linux drivers exist (SOEM, IgH)?','T','I'],
+  ['What is FPGA programming from Linux? How do drivers use the FPGA manager framework (fpga_manager_register, fpga_image_load) to load bitstreams?','T','I'],
+  ['What is the FPGA bridge framework? How does it isolate FPGA fabric from the processor bus during bitstream reconfiguration?','T','I'],
+  ['What is a PLC (Programmable Logic Controller) interface driver? How does Linux communicate with an attached PLC via Modbus over RS-485?','T','I'],
+  ['What is the industrial Ethernet protocol stack for PROFINET? At what layer does the Linux kernel participate and what driver support exists?','T','A'],
+  ['What is motor control via PWM? How does a BLDC (Brushless DC) motor driver use three-phase PWM with dead-time insertion from a timer driver?','T','I'],
+  ['What is a resolver or encoder interface driver? How does the IIO subsystem expose quadrature encoder position from a hardware counter peripheral?','T','I'],
+  ['What is IEC 61508 functional safety? What requirements does it place on safety-critical driver code (defensive programming, error detection, redundancy)?','T','A'],
+  ['What is the difference between a safety element out of context (SEooC) and an in-context safety element for a driver used in ISO 26262 automotive systems?','T','A'],
+  ['What is the RTnet (real-time networking) stack for EtherCAT? How does it provide deterministic Ethernet packet delivery from the kernel?','T','A'],
+  ['Write a Modbus RTU master driver using SocketCAN-style socket interface over RS-485: send function code 0x03 (read holding registers), parse multi-byte response, expose registers via sysfs.','C','A'],
+  ['Write an FPGA manager driver that loads a Xilinx .bin bitstream file via the fpga_image_load API. Verify the FPGA is configured by reading a known register.','C','A'],
+  ['Write a quadrature encoder IIO driver using the STM32 timer counter peripheral: configure the timer in encoder mode, implement read_raw() to return position, direction, and velocity.','C','A'],
+  ['Write a three-phase PWM driver for BLDC motor control using three synchronized timer channels with hardware dead-time insertion. Expose duty cycle and dead time via sysfs.','C','A'],
+  ['Write a safety watchdog driver with a two-step arming sequence (write MAGIC1 then MAGIC2 within 1ms) to prevent accidental resets. Test that single writes do not reset.','C','I'],
+  ['Implement a redundant ADC reading driver: read two channels simultaneously, compare values, and return an error if they differ by more than 1 LSB (safety-critical current measurement).','C','A'],
+  ['What is the Linux real-time control loop pattern? Describe a 1kHz servo loop using PREEMPT_RT, mlockall, SCHED_FIFO, and clock_nanosleep with drift compensation.','T','A'],
+  ['What is the IEC 61499 function block model? How does it compare to the Linux driver model for industrial control applications?','T','A'],
+  ['What is deterministic latency in an industrial driver? What kernel configurations and driver design choices guarantee a maximum 50-microsecond response to a hardware event?','T','A'],
+  ['Design the complete software driver stack for an industrial robot arm controller: 6 servo axes (EtherCAT), force-torque sensor (SPI IIO), safety I/O (GPIO with redundancy), and emergency stop (NMI-capable GPIO). Include timing budget for the 1kHz control loop.','T','A']
+  ]
+},
+{
+  id:'m27',phase:3,num:'27',icon:'🚀',
+  title:'Bootloader & Early Hardware Initialization',
+  desc:'U-Boot drivers, SPL, TF-A (Trusted Firmware), OP-TEE, ROM code, hardware bring-up flow.',
+  qs:[
+  ['What is U-Boot? How does it initialize DDR, clocks, and peripherals before loading the Linux kernel?','T','B'],
+  ['What is the U-Boot SPL (Secondary Program Loader)? What is its size constraint and what minimal initialization must it perform?','T','B'],
+  ['What is TF-A (Arm Trusted Firmware-A)? What are BL1, BL2, BL31, and BL33 and what does each stage do?','T','I'],
+  ['What is OP-TEE? How does it provide a Trusted Execution Environment alongside the normal world Linux kernel using ARM TrustZone?','T','I'],
+  ['What is the ROM bootloader? How does an SoC ROM code choose the boot device (eMMC, SPI NOR, USB) and load the first-stage bootloader?','T','I'],
+  ['What is a U-Boot driver model (DM)? How does U-Boot now use a device tree and driver binding similar to Linux?','T','I'],
+  ['What is the UEFI firmware interface? How does it provide a standardized boot environment for ARM64 and x86 platforms?','T','I'],
+  ['What is the difference between PSCI (Power State Coordination Interface) and platform-specific power management code in TF-A?','T','I'],
+  ['What is hardware bring-up? Describe the sequence from first silicon to a booting Linux kernel, listing every component that must work.','T','I'],
+  ['What is DDR initialization in a bootloader? What training sequences (write leveling, DQ, CA) does the DDR controller perform at boot?','T','A'],
+  ['Write a U-Boot I2C driver for the DM framework: implement i2c_xfer() that calls the hardware I2C controller registers. Bind it to a DT node.','C','A'],
+  ['Write a U-Boot env driver that stores environment variables in an SPI NOR flash partition. Implement env_load() and env_save().','C','A'],
+  ['Write a U-Boot board file for a custom ARM64 board: define board_init(), dram_init(), and implement board-specific I2C PMIC initialization before DDR calibration.','C','A'],
+  ['Set up a TF-A + OP-TEE + U-Boot + Linux chain on QEMU: build each component, link them, boot the full chain, and verify the TEE is running via tee-supplicant.','C','A'],
+  ['Write a TA (Trusted Application) for OP-TEE that stores and retrieves a secret key in secure storage. Call it from Linux using the TEE supplicant.','C','A'],
+  ['Write a U-Boot fitImage: pack kernel, DTB, and initramfs into a FIT image. Add a hash for each component and a signature for the whole image. Boot with verified boot.','C','A'],
+  ['What is JTAG debugging at the bootloader level? How do you attach OpenOCD to an ARM SoC via JTAG and debug early boot failures before the console is available?','T','I'],
+  ['What is the difference between secure boot and verified boot? How does each chain of trust work from the ROM code to the application?','T','I'],
+  ['What is ATF platform porting? What files must you create to add TF-A support for a new SoC (platform.mk, power.c, topology.c)?','T','A'],
+  ['Design the complete firmware boot chain for a safety-critical automotive ECU: from ROM code through HSM (Hardware Security Module) verification to AUTOSAR OS and Linux guest. Describe every stage and its security role.','T','A']
+  ]
+},
+{
+  id:'m28',phase:3,num:'28',icon:'🔍',
+  title:'Driver Debugging & Root Cause Analysis',
+  desc:'Kernel oops analysis, KGDB, devmem, logic analyzer correlation, ftrace, crash dump, field debugging.',
+  qs:[
+  ['How do you decode a kernel oops message? Identify the crash address, the faulting instruction, the call stack, and the register state.','T','B'],
+  ['What is the difference between a kernel oops and a kernel panic? What determines whether an oops leads to a panic?','T','B'],
+  ['What is KGDB? How do you set it up over a serial port or QEMU virtio-serial to debug a kernel driver with GDB?','T','I'],
+  ['What is the crash utility? How do you use it with a vmcore dump to inspect driver state after a panic (bt, struct, rd, sym)?','T','I'],
+  ['What is devmem? How do you use /dev/mem or /dev/devmem2 to read and write hardware registers from user space during bring-up?','T','B'],
+  ['What is a logic analyzer? How do you correlate I2C/SPI waveforms on a logic analyzer with kernel driver trace output to diagnose timing issues?','T','I'],
+  ['What is the objdump disassembly method for oops analysis? How do you find the exact C source line from an oops offset?','T','I'],
+  ['What is the difference between GDB hardware breakpoints and software breakpoints? Why can you only set 4 hardware breakpoints on ARM Cortex-A?','T','I'],
+  ['What is a hung task? How does the hung_task kernel watchdog detect it and what driver patterns commonly cause them?','T','I'],
+  ['What is a kernel soft lockup? What causes them in drivers (IRQ held too long, spinlock held with preemption disabled) and how does the watchdog detect them?','T','I'],
+  ['Reproduce a use-after-free in a character driver: call kfree in the release() path while a concurrent read() is still running. Capture the KASAN report and fix the race with a kref.','C','A'],
+  ['Reproduce a NULL pointer dereference in a probe() function by not initializing a struct pointer before use. Decode the oops message to find the exact source line.','C','I'],
+  ['Set up KGDB in QEMU and set a breakpoint in a driver probe() function. Single-step through probe, inspect local variables, and read hardware register values.','C','I'],
+  ['Use ftrace function_graph tracer to trace all calls inside a driver during an I2C transaction. Identify the longest single function and optimize it.','C','I'],
+  ['Use devmem2 to directly read UART registers on a platform in U-Boot or early Linux before the driver is loaded. Verify the hardware FIFO is operational.','C','B'],
+  ['Capture a kernel crash dump with kdump, load it in crash, and use the bt -a command to print the backtrace of all tasks. Identify any tasks stuck in D state.','C','I'],
+  ['What is the difference between a driver bug that causes a crash immediately vs a memory corruption that causes a crash hours later? What tools help in the second case?','T','I'],
+  ['What is binary search debugging? How do you bisect a regression between kernel versions using git bisect to find the commit that broke your driver?','T','B'],
+  ['What is the decode_stacktrace.sh script? How does it symbolize addresses in a stack trace using the kernel symbol table and source map?','T','B'],
+  ['Design a field debugging strategy for a driver that crashes intermittently in production on 1 out of 10,000 devices per day: describe the data collection, remote analysis, and fix deployment approach.','T','A']
+  ]
+},
+{
+  id:'m29',phase:3,num:'29',icon:'🏆',
+  title:'Driver Upstreaming & Mainline Contribution',
+  desc:'Coding style, patch workflow, Signed-off-by, maintainer review, DT binding review, version history.',
+  qs:[
+  ['What is the Linux kernel coding style? Name 10 specific rules from Documentation/process/coding-style.rst that differ from common C style.','T','B'],
+  ['What is the patch submission format? Describe the subject line convention, the commit message body, the Signed-off-by tag, and the Fixes tag.','T','B'],
+  ['What is get_maintainer.pl? How do you use it to find the correct maintainers and mailing lists to CC for your driver patch?','T','B'],
+  ['What is the reviewed-by, acked-by, and tested-by tag? What does each mean and who can add them?','T','B'],
+  ['What is checkpatch.pl? Run it on a driver patch and fix all warnings. What categories of issues does it check?','T','B'],
+  ['What is the driver review process? What does a maintainer check: coding style, API usage, DT binding, locking, error handling, documentation?','T','I'],
+  ['What is a DT binding review? What do reviewers check: schema completeness, example validity, property naming conventions, unit suffix rules?','T','I'],
+  ['What is the RFC (Request for Comments) patch? When would you send an RFC instead of a regular patch series?','T','I'],
+  ['What is the difference between submitting to a subsystem tree vs directly to Linus? What is the merge window and how does it affect patch timing?','T','I'],
+  ['What is a patch series (cover letter + individual patches)? How do you structure a 5-patch series to add a new driver with DT binding, core driver, and documentation?','T','I'],
+  ['Prepare a complete patch for a new I2C sensor driver: DT binding YAML, driver source, Kconfig entry, Makefile entry, and cover letter. Run dt-schema and checkpatch. Address review comments.','C','A'],
+  ['Submit a fix for a real kernel bug from kernel.org/bugzilla. Find a bug, reproduce it, write a fix, test it, and prepare the patch with correct Fixes tag and Cc stable.','C','A'],
+  ['Write a complete DT binding YAML for a new I2C audio codec. Validate with dt-schema. Include all required properties, optional properties, and a working example.','C','A'],
+  ['Convert an out-of-tree vendor driver (e.g., from a Raspberry Pi BSP) to mainline coding style: remove vendor-specific APIs, add proper error handling, use devm_, add KUnit tests.','C','A'],
+  ['Set up a b4 workflow for patch management: use b4 prep to create a patch series, b4 send to send to the mailing list, and b4 am to apply a received patch for review.','C','I'],
+  ['Use lore.kernel.org to search for existing discussions about a driver subsystem. Find a review thread, read the feedback, and understand how the driver was improved before merging.','C','B'],
+  ['What is the kernel ABI stability policy? What guarantees does the kernel provide for userspace ABI vs internal kernel API?','T','I'],
+  ['What is SPDX? How does the SPDX-License-Identifier line replace the old GPL boilerplate in driver files?','T','B'],
+  ['What is the difference between GPL-2.0-only and GPL-2.0-or-later? Why does the kernel enforce GPL-compatible licenses for modules?','T','B'],
+  ['Design a 6-month roadmap to get a new camera sensor driver merged into the Linux kernel mainline: list all milestones, review cycles, and what feedback you expect at each stage.','T','A']
+  ]
+},
+{
+  id:'m30',phase:3,num:'30',icon:'🌐',
+  title:'System Design for Driver-Heavy Products',
+  desc:'End-to-end system design: camera pipeline, audio/video sync, multi-driver coordination, production readiness.',
+  qs:[
+  ['Design the complete Linux driver stack for a standalone IP camera: CSI-2 sensor, ISP, H.264 encoder, SD card storage, Ethernet, and IR LED control.','T','A'],
+  ['Design the driver architecture for a hearing aid DSP: 2 MEMS microphones (PDM), an audio DSP (I2S), a BLE SoC (UART/SPI), and a charger IC (I2C). Include power management.','T','A'],
+  ['Design the software driver stack for an autonomous robot: 6 cameras (CSI-2), 1 LiDAR (PCIe/Ethernet), 12 ultrasonic sensors (GPIO/IIO), motor controllers (CAN), and a safety watchdog.','T','A'],
+  ['Design the driver architecture for a smart display: DSI panel, touch controller (I2C HID), ambient light sensor (IIO), proximity sensor (IIO), and haptic actuator (PWM).','T','A'],
+  ['Design the audio-video synchronization driver architecture for a video conferencing device: USB camera, USB microphone, hardware encoder (PCIe), and speaker (I2S). How do you synchronize A/V at the driver level?','T','A'],
+  ['Design a driver architecture for a 5G modem embedded in a laptop: PCIe transport to the host, MBIM/QMI protocol, wwan subsystem registration, power management (D3cold), and firmware update.','T','A'],
+  ['Design the complete driver stack for a medical ultrasound probe: high-voltage transducer array driver, ADC capture (PCIe DMA), real-time DSP chain, and USB output to a workstation.','T','A'],
+  ['Design the driver architecture for a drone flight controller: IMU (SPI IIO), GPS (UART), barometer (I2C IIO), ESC motor control (PWM), RC receiver (PPM/SBUS), and telemetry radio (SPI).','T','A'],
+  ['Design the driver stack for a smart factory edge gateway: 8 CAN bus ports, 16 RS-485 ports, 4 industrial Ethernet ports (EtherCAT), and a real-time Linux control application.','T','A'],
+  ['Design the complete driver and middleware stack for an automotive ADAS domain controller: 8 cameras (CSI-2 with ISP), radar (PCIe), LiDAR (PCIe), V2X radio (PCIe), CAN FD, and functional safety monitors. Include timing budgets and safety integrity levels.','T','A']
+  ]
+},
+];
+
+const SKEY = 'device_drivers_mastery_v1';
+const GH_REPO = 'Srivathsan98/DeviceDrivers-Mastery';
+
+const ST={};
+try{Object.assign(ST,JSON.parse(localStorage.getItem(SKEY)||'{}'));}catch(e){}
+function save(){try{localStorage.setItem(SKEY,JSON.stringify(ST));}catch(e){}}
+function k(mid,qi){return mid+'_'+qi;}
+function isChecked(mid,qi){return!!ST[k(mid,qi)];}
+function toggle(mid,qi){ST[k(mid,qi)]=!ST[k(mid,qi)];save();refreshAll(mid,qi);}
+
+function saveIssue(mid,qi,val){
+  const ik='iss_'+mid+'_'+qi;
+  if(val.trim()){ST[ik]=val.trim();}else{delete ST[ik];}
+  save();
+  const link=document.getElementById('issl-'+mid+'-'+qi);
+  if(link){
+    if(val.trim()){link.href='https://github.com/'+GH_REPO+'/issues/'+val.trim();link.className='issue-open active';}
+    else{link.href='#';link.className='issue-open';}
+  }
+}
+
+function modStats(m){let d=0;m.qs.forEach((_,i)=>{if(isChecked(m.id,i))d++;});return{done:d,total:m.qs.length};}
+function allStats(){let d=0,t=0,md=0;MODULES.forEach(m=>{const s=modStats(m);d+=s.done;t+=s.total;if(s.done===s.total&&s.total>0)md++;});return{done:d,total:t,modsDone:md};}
+
+function refreshAll(mid,qi){
+  const row=document.getElementById('row-'+mid+'-'+qi);
+  if(row){const c=isChecked(mid,qi);row.className=c?'checked':'';const cc=row.querySelector('.cb-check');if(cc)cc.style.display=c?'block':'none';}
+  const m=MODULES.find(x=>x.id===mid);
+  const s=modStats(m);const pct=s.total?Math.round(s.done/s.total*100):0;
+  const fill=document.getElementById('mfill-'+mid);if(fill)fill.style.width=pct+'%';
+  const cnt=document.getElementById('mcnt-'+mid);if(cnt)cnt.textContent=s.done+'/'+s.total;
+  const badge=document.getElementById('mbadge-'+mid);
+  if(badge){
+    if(pct===0){badge.className='mod-badge badge-ns';badge.textContent='Not started';}
+    else if(pct<100){badge.className='mod-badge badge-ip';badge.textContent=pct+'% done';}
+    else{badge.className='mod-badge badge-done';badge.textContent='Mastered \u2713';}
+  }
+  const ms=document.getElementById('ms-pct-'+mid);if(ms)ms.textContent=pct+'%';
+  const mpf=document.getElementById('ms-fill-'+mid);if(mpf)mpf.style.width=pct+'%';
+  const as=allStats();const ap=as.total?Math.round(as.done/as.total*100):0;
+  document.getElementById('done-count').textContent=as.done;
+  document.getElementById('total-count').textContent=as.total;
+  document.getElementById('pct-label').textContent=ap+'%';
+  document.getElementById('mod-done').textContent=as.modsDone;
+  document.getElementById('overall-fill').style.width=ap+'%';
+  const btn=document.getElementById('nav-'+mid);
+  if(btn)btn.className='mod-btn'+(pct===100?' done':pct>0?' partial':'');
+}
+
+let curPhase=0;
+function filterPhase(p){
+  curPhase=p;
+  document.querySelectorAll('.phase-btn').forEach((b,i)=>b.className='phase-btn'+(i===p?' active':''));
+  renderContent();
+}
+
+function renderModNav(){
+  const as=allStats();
+  document.getElementById('s-total').textContent=as.total;
+  let h='';
+  MODULES.forEach(m=>{
+    const s=modStats(m);const p=s.total?Math.round(s.done/s.total*100):0;
+    h+=`<button id="nav-${m.id}" class="mod-btn${p===100?' done':p>0?' partial':''}" onclick="jumpToModule('${m.id}')">${m.num}</button>`;
+  });
+  document.getElementById('mod-nav').innerHTML=h;
+}
+
+function jumpToModule(id){
+  const el=document.getElementById('card-'+id);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'start'});if(!el.classList.contains('open'))el.classList.add('open');}
+}
+function toggleModule(id){document.getElementById('card-'+id).classList.toggle('open');}
+
+function renderContent(){
+  const phases=curPhase===0?[1,2,3]:[curPhase];
+  const pl={1:'Phase 01 \u00b7 Driver Foundations',2:'Phase 02 \u00b7 Subsystems & Buses',3:'Phase 03 \u00b7 Advanced & Real-World'};
+  const TM={'T':'theory','C':'code','D':'debug','S':'design'};
+  const TC={'T':'tag-theory','C':'tag-code','D':'tag-debug','S':'tag-design'};
+  const DM={'B':'Beginner','I':'Intermediate','A':'Advanced'};
+  const DC={'B':'diff-B','I':'diff-I','A':'diff-A'};
+  let h='';
+  phases.forEach(ph=>{
+    const mods=MODULES.filter(m=>m.phase===ph);
+    h+=`<div class="phase-header">${pl[ph]} \u2014 ${mods.length} modules</div>`;
+    mods.forEach(m=>{
+      const s=modStats(m);const pct=s.total?Math.round(s.done/s.total*100):0;
+      let bc='mod-badge badge-ns',bt='Not started';
+      if(pct>0&&pct<100){bc='mod-badge badge-ip';bt=pct+'% done';}
+      else if(pct===100){bc='mod-badge badge-done';bt='Mastered \u2713';}
+      h+=`<div class="module" id="card-${m.id}"><div class="module-head" onclick="toggleModule('${m.id}')"><div class="module-num">${m.num}</div><div class="module-icon">${m.icon}</div><div class="module-info"><div class="module-title">${m.title}</div><div class="module-desc">${m.desc}</div></div><div class="module-right"><div class="mod-count" id="mcnt-${m.id}">${s.done}/${s.total}</div><div class="${bc}" id="mbadge-${m.id}">${bt}</div></div><div class="module-chevron">&#9654;</div></div><div class="mod-bar"><div class="mod-bar-fill" id="mfill-${m.id}" style="width:${pct}%"></div></div><div class="module-body"><div class="mod-stats"><div class="ms">Done: <span id="ms-done-${m.id}">${s.done}</span>/${s.total}</div><div class="ms">Progress: <span id="ms-pct-${m.id}">${pct}%</span></div><div class="mod-prog-bar"><div class="mod-prog-fill" id="ms-fill-${m.id}" style="width:${pct}%"></div></div></div><div class="q-table-wrap"><table><thead><tr><th></th><th>#</th><th>Question</th><th>Type</th><th>Difficulty</th><th>GitHub</th></tr></thead><tbody>`;
+      m.qs.forEach((q,qi)=>{
+        const c=isChecked(m.id,qi);
+        const issVal=ST['iss_'+m.id+'_'+qi]||'';
+        const typ=q[1]||'T', diff=q[2]||'I';
+        const qtext=q[0].replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        h+=`<tr id="row-${m.id}-${qi}" class="${c?'checked':''}" onclick="toggle('${m.id}',${qi})"><td><div class="cb"><span class="cb-check" style="display:${c?'block':'none'}">&#10003;</span></div></td><td class="q-num">${qi+1}</td><td class="q-text">${qtext}</td><td><span class="tag ${TC[typ]}">${TM[typ]}</span></td><td><span class="diff ${DC[diff]}">${DM[diff]}</span></td><td class="issue-cell" onclick="event.stopPropagation()"><input class="issue-input" id="iss-${m.id}-${qi}" type="text" placeholder="#" value="${issVal}" onchange="saveIssue('${m.id}',${qi},this.value)" /><a class="issue-open${issVal?' active':''}" id="issl-${m.id}-${qi}" href="${issVal?'https://github.com/'+GH_REPO+'/issues/'+issVal:'#'}" target="_blank">${issVal?'#'+issVal:'--'}</a></td></tr>`;
+      });
+      h+=`</tbody></table></div></div></div>`;
+    });
+  });
+  document.getElementById('content').innerHTML=h;
+}
+
+renderModNav();
+renderContent();
+const _as=allStats();const _ap=_as.total?Math.round(_as.done/_as.total*100):0;
+document.getElementById('done-count').textContent=_as.done;
+document.getElementById('total-count').textContent=_as.total;
+document.getElementById('pct-label').textContent=_ap+'%';
+document.getElementById('mod-done').textContent=_as.modsDone;
+document.getElementById('overall-fill').style.width=_ap+'%';
+
+</script>
+</body>
+</html>
